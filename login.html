@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Administrator sign in for E&R Real Estate and Construction Limited">
+    <title>Admin sign in | E&amp;R Real Estate &amp; Construction</title>
+    <link rel="icon" href="img/favicon.ico">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
+    <link href="css/admin.css" rel="stylesheet">
+</head>
+
+<body class="login-page">
+    <main class="login-shell">
+        <section class="login-card" aria-labelledby="loginTitle">
+            <a class="login-brand" href="index.html"><img src="logo/E&amp;R Logo.jfif"
+                    alt="E&amp;R logo"><span><strong>E&amp;R</strong><small>Administration</small></span></a>
+            <p class="eyebrow">Secure workspace</p>
+            <h1 id="loginTitle">Welcome back</h1>
+            <p class="login-copy">Sign in to manage your company website and administrators.</p>
+            <form id="loginForm">
+                <label for="loginEmail">Email address<input id="loginEmail" name="email" type="email"
+                        autocomplete="username" placeholder="you@errealestate.co.ke" required></label>
+                <label for="loginPassword">Password<div class="password-field"><input id="loginPassword" name="password"
+                            type="password" autocomplete="current-password" placeholder="Enter your password"
+                            required><button type="button" id="togglePassword" aria-label="Show password"><i
+                                class="far fa-eye"></i></button></div></label>
+                <div class="login-options"><label class="remember-option"><input type="checkbox"
+                            name="remember"><span>Remember me</span></label><a href="#" id="forgotPassword">Forgot
+                        password?</a></div>
+                <button class="button button-primary login-submit" type="submit">Sign in <i
+                        class="fas fa-arrow-right"></i></button>
+                <p class="login-message" id="loginMessage" role="status"></p>
+            </form>
+            <p class="login-footer"><i class="fas fa-lock"></i> Administrator access is protected by your organisation.
+            </p>
+        </section>
+        <aside class="login-aside">
+            <p class="eyebrow">E&amp;R Control Room</p>
+            <h2>Build with clarity.<br><em>Lead with confidence.</em></h2>
+            <p>One focused place for your team, your public presence, and the details that keep every project moving.
+            </p><a href="index.html">Return to public site <i class="fas fa-arrow-right"></i></a>
+        </aside>
+    </main>
+    <script>
+        (function () {
+            var form = document.getElementById("loginForm");
+            var message = document.getElementById("loginMessage");
+            var password = document.getElementById("loginPassword");
+            document.getElementById("togglePassword").addEventListener("click", function () {
+                var isPassword = password.type === "password";
+                password.type = isPassword ? "text" : "password";
+                this.setAttribute("aria-label", isPassword ? "Hide password" : "Show password");
+            });
+            document.getElementById("forgotPassword").addEventListener("click", function (event) {
+                event.preventDefault();
+                message.textContent = "Password recovery will be available when server authentication is connected.";
+                message.className = "login-message visible";
+            });
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+                message.textContent = "Login is not active yet. Connect the site to a server-side authentication provider before issuing passwords.";
+                message.className = "login-message visible warning";
+            });
+        }());
+    </script>
+</body>
+
+</html>

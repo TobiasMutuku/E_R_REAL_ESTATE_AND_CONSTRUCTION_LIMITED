@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="E&R Real Estate and Construction Limited administration panel">
+    <title>Admin Panel | E&R Real Estate &amp; Construction</title>
+    <link rel="icon" href="img/favicon.ico">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
+    <link href="css/admin.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="admin-shell">
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-brand">
+                <img src="logo/E&R Logo.jfif" alt="E&R logo">
+                <div>
+                    <strong>E&amp;R</strong>
+                    <span>Control room</span>
+                </div>
+            </div>
+
+            <div class="workspace-label">Workspace</div>
+            <nav class="sidebar-nav" aria-label="Admin sections">
+                <button class="sidebar-link active" type="button" data-view="overview"><i
+                        class="fas fa-chart-line"></i><span>Overview</span></button>
+                <button class="sidebar-link" type="button" data-view="admins"><i
+                        class="fas fa-user-shield"></i><span>Admin access</span><span class="nav-count"
+                        id="adminCount">3</span></button>
+                <button class="sidebar-link" type="button" data-view="settings"><i
+                        class="fas fa-sliders-h"></i><span>Site settings</span></button>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a class="sidebar-link" href="index.html"><i class="fas fa-external-link-alt"></i><span>View public
+                        site</span></a>
+                <button class="sidebar-link sidebar-signout" type="button" id="signOutButton"><i
+                        class="fas fa-sign-out-alt"></i><span>Sign out</span></button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <button class="mobile-menu" type="button" id="menuButton" aria-label="Open navigation"><i
+                        class="fas fa-bars"></i></button>
+                <div class="breadcrumbs"><span>Administration</span><i class="fas fa-chevron-right"></i><strong
+                        id="breadcrumbCurrent">Overview</strong></div>
+                <div class="header-actions">
+                    <button class="icon-button" type="button" title="View notifications"
+                        aria-label="View notifications"><i class="far fa-bell"></i><span
+                            class="notification-dot"></span></button>
+                    <div class="user-chip">
+                        <span class="avatar">AM</span>
+                        <span class="user-details"><strong>Elijah Wambua</strong><small>CEO &amp;
+                                Director</small></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <section class="view active" id="overviewView" data-page="overview">
+                    <div class="page-intro">
+                        <div>
+                            <p class="eyebrow">Friday, 04 September 2026</p>
+                            <h1>Good morning, Elijah</h1>
+                            <p class="intro-copy">Here is the latest activity across your E&amp;R workspace.</p>
+                        </div>
+                        <button class="button button-primary" type="button" data-open-modal><i
+                                class="fas fa-user-plus"></i> Add administrator</button>
+                    </div>
+
+                    <div class="stat-grid">
+                        <article class="stat-card">
+                            <div class="stat-icon stat-icon-brass"><i class="fas fa-users"></i></div>
+                            <div><span>Active administrators</span><strong id="activeAdminStat">3</strong><small
+                                    class="stat-trend"><i class="fas fa-arrow-up"></i> 1 this month</small></div>
+                        </article>
+                        <article class="stat-card">
+                            <div class="stat-icon stat-icon-green"><i class="fas fa-shield-alt"></i></div>
+                            <div><span>Security status</span><strong>Good</strong><small class="stat-trend"><i
+                                        class="fas fa-check"></i> No issues detected</small></div>
+                        </article>
+                        <article class="stat-card">
+                            <div class="stat-icon stat-icon-blue"><i class="fas fa-eye"></i></div>
+                            <div><span>Site visibility</span><strong>Live</strong><small class="stat-trend"><i
+                                        class="fas fa-clock"></i> Updated 2h ago</small></div>
+                        </article>
+                        <article class="stat-card">
+                            <div class="stat-icon stat-icon-coral"><i class="fas fa-envelope"></i></div>
+                            <div><span>Unread enquiries</span><strong>12</strong><small class="stat-trend warning"><i
+                                        class="fas fa-exclamation-circle"></i> Needs attention</small></div>
+                        </article>
+                    </div>
+
+                    <div class="content-grid">
+                        <section class="panel activity-panel">
+                            <div class="panel-heading">
+                                <div>
+                                    <p class="eyebrow">Audit trail</p>
+                                    <h2>Recent activity</h2>
+                                </div><button class="text-button" type="button" id="viewAllActivity">View all <i
+                                        class="fas fa-arrow-right"></i></button>
+                            </div>
+                            <div class="activity-list" id="activityList">
+                                <div class="activity-item"><span class="activity-icon brass"><i
+                                            class="fas fa-user-plus"></i></span>
+                                    <div><strong>New administrator added</strong>
+                                        <p>Grace Wanjiku was invited to the workspace.</p><small>Today, 09:42</small>
+                                    </div>
+                                </div>
+                                <div class="activity-item"><span class="activity-icon green"><i
+                                            class="fas fa-cog"></i></span>
+                                    <div><strong>Site settings updated</strong>
+                                        <p>Contact phone number was changed.</p><small>Yesterday, 16:18</small>
+                                    </div>
+                                </div>
+                                <div class="activity-item"><span class="activity-icon blue"><i
+                                            class="fas fa-sign-in-alt"></i></span>
+                                    <div><strong>Successful sign in</strong>
+                                        <p>Elijah Wambua signed in from Nairobi, Kenya.</p><small>Yesterday,
+                                            08:03</small>
+                                    </div>
+                                </div>
+                                <div class="activity-item"><span class="activity-icon coral"><i
+                                            class="fas fa-key"></i></span>
+                                    <div><strong>Password updated</strong>
+                                        <p>Your administrator password was changed.</p><small>02 Sep 2026, 11:27</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="panel quick-panel">
+                            <div class="panel-heading">
+                                <div>
+                                    <p class="eyebrow">Shortcuts</p>
+                                    <h2>Quick actions</h2>
+                                </div>
+                            </div>
+                            <button class="quick-action" type="button" data-open-modal><span class="quick-icon brass"><i
+                                        class="fas fa-user-plus"></i></span><span><strong>Invite
+                                        administrator</strong><small>Grant dashboard access</small></span><i
+                                    class="fas fa-chevron-right"></i></button>
+                            <button class="quick-action" type="button" data-view-target="settings"><span
+                                    class="quick-icon green"><i class="fas fa-building"></i></span><span><strong>Update
+                                        company profile</strong><small>Keep public details current</small></span><i
+                                    class="fas fa-chevron-right"></i></button>
+                            <button class="quick-action" type="button" data-view-target="settings"><span
+                                    class="quick-icon blue"><i class="fas fa-lock"></i></span><span><strong>Review
+                                        security</strong><small>Manage account protection</small></span><i
+                                    class="fas fa-chevron-right"></i></button>
+                        </section>
+                    </div>
+                </section>
+
+                <section class="view" id="adminsView" data-page="admins">
+                    <div class="page-intro">
+                        <div>
+                            <p class="eyebrow">Access control</p>
+                            <h1>Admin access</h1>
+                            <p class="intro-copy">Manage the people who can operate your site.</p>
+                        </div><button class="button button-primary" type="button" data-open-modal><i
+                                class="fas fa-user-plus"></i> Add administrator</button>
+                    </div>
+                    <section class="panel table-panel">
+                        <div class="table-toolbar">
+                            <div class="search-field"><i class="fas fa-search"></i><input id="adminSearch" type="search"
+                                    placeholder="Search administrators" aria-label="Search administrators"></div><span
+                                class="table-meta" id="adminTableMeta">3 administrators</span>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Administrator</th>
+                                        <th>Role</th>
+                                        <th>Last active</th>
+                                        <th>Status</th>
+                                        <th><span class="sr-only">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminTableBody"></tbody>
+                            </table>
+                        </div>
+                    </section>
+                </section>
+
+                <section class="view" id="settingsView" data-page="settings">
+                    <div class="page-intro">
+                        <div>
+                            <p class="eyebrow">Workspace configuration</p>
+                            <h1>Site settings</h1>
+                            <p class="intro-copy">Control the public information shown across your website.</p>
+                        </div><span class="saved-state" id="savedState"><i class="fas fa-check-circle"></i> All changes
+                            saved</span>
+                    </div>
+                    <form class="settings-grid" id="settingsForm">
+                        <section class="panel settings-panel">
+                            <div class="panel-heading">
+                                <div>
+                                    <p class="eyebrow">Public profile</p>
+                                    <h2>Company information</h2>
+                                </div>
+                            </div>
+                            <div class="form-grid"><label>Company name<input name="companyName" type="text"
+                                        value="E&R Real Estate & Construction Limited" required></label><label>Support
+                                    email<input name="email" type="email" value="errealestateconstruction@gmail.com"
+                                        required></label><label>Phone number<input name="phone" type="tel"
+                                        value="+254 748 766 822" required></label><label>Office location<input
+                                        name="location" type="text" value="Watamu Mall, Office 34, 1st Floor, Watamu"
+                                        required></label><label class="full-width">Homepage introduction<textarea
+                                        name="intro"
+                                        rows="4">Building trust and delivering quality across residential, commercial, and civil construction.</textarea></label>
+                            </div>
+                        </section>
+                        <section class="panel settings-panel">
+                            <div class="panel-heading">
+                                <div>
+                                    <p class="eyebrow">Preferences</p>
+                                    <h2>Workspace controls</h2>
+                                </div>
+                            </div>
+                            <div class="toggle-list"><label class="toggle-row"><span><strong>Public site
+                                            visibility</strong><small>Allow visitors to view the public
+                                            website.</small></span><input name="siteVisible" type="checkbox"
+                                        checked><span class="toggle-ui"></span></label><label
+                                    class="toggle-row"><span><strong>Email notifications</strong><small>Receive an email
+                                            for new contact enquiries.</small></span><input name="notifications"
+                                        type="checkbox" checked><span class="toggle-ui"></span></label><label
+                                    class="toggle-row"><span><strong>Two-step verification</strong><small>Require an
+                                            extra sign-in check for administrators.</small></span><input name="twoStep"
+                                        type="checkbox" checked><span class="toggle-ui"></span></label></div>
+                        </section>
+                        <div class="settings-actions"><span>Last saved locally just now</span><button
+                                class="button button-primary" type="submit"><i class="fas fa-save"></i> Save
+                                settings</button></div>
+                    </form>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-backdrop" id="adminModal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="modal-close"
+                type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times"></i></button>
+            <p class="eyebrow">Access control</p>
+            <h2 id="modalTitle">Add administrator</h2>
+            <p class="modal-copy">Send a secure invitation to a trusted member of your team.</p>
+            <form id="adminForm"><label>Full name<input name="name" type="text" placeholder="e.g. Amina Otieno"
+                        required></label><label>Work email<input name="email" type="email"
+                        placeholder="name@company.com" required></label><label>Role<select name="role">
+                        <option>Administrator</option>
+                        <option>Editor</option>
+                        <option>Support manager</option>
+                    </select></label>
+                <div class="modal-actions"><button class="button button-quiet" type="button"
+                        data-close-modal>Cancel</button><button class="button button-primary" type="submit"><i
+                            class="fas fa-paper-plane"></i> Send invitation</button></div>
+            </form>
+        </div>
+    </div>
+    <div class="toast" id="toast" role="status"><i class="fas fa-check-circle"></i><span>Changes saved</span></div>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,4 @@
+token.txt
+.env
+.env.*
+!.env.example
