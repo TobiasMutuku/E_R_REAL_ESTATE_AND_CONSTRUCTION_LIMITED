@@ -1,17 +1,27 @@
 <?php
 
-session_start();
+require_once __DIR__ . "/../includes/admin-session.php";
+require_once __DIR__ . "/../includes/admin-form.php";
+require_once __DIR__ . "/../includes/admin-audit.php";
+require_once __DIR__ . "/../includes/public-form-security.php";
+startAdminSession();
 require_once __DIR__ . "/../config/db.php";
 
 $error = "";
 $email = "";
+$token = adminFormToken();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $email = trim($_POST["email"] ?? "");
     $password = $_POST["password"] ?? "";
 
-    if (empty($email) || empty($password)) {
+    if (!adminFormIsValid()) {
+        $error = "Your sign-in session expired. Refresh the page and try again.";
+    } elseif (!publicFormRateLimit("admin-login", 2)) {
+        http_response_code(429);
+        $error = "Please wait a moment before trying to sign in again.";
+    } elseif (empty($email) || empty($password)) {
 
         $error = "Please enter your email and password.";
 
@@ -19,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $sql = "SELECT id, full_name, email, password, role
                 FROM admin_users
-                WHERE email = ?
+                WHERE email = ? AND is_active = 1
                 LIMIT 1";
 
         $stmt = $conn->prepare($sql);
@@ -43,6 +53,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $_SESSION["admin_name"] = $user["full_name"];
                     $_SESSION["admin_email"] = $user["email"];
                     $_SESSION["admin_role"] = $user["role"];
+                    $_SESSION["admin_created_at"] = time();
+                    $_SESSION["admin_last_activity"] = time();
+                    $_SESSION["admin_regenerated_at"] = time();
+
+                    $lastLogin = $conn->prepare("UPDATE admin_users SET last_login_at = NOW() WHERE id = ?");
+                    if ($lastLogin) {
+                        $lastLogin->bind_param("i", $user["id"]);
+                        if (!$lastLogin->execute()) {
+                            error_log("Administrator last login time could not be updated: " . $conn->error);
+                        }
+                        $lastLogin->close();
+                    }
+                    try {
+                        recordAdminAudit($conn, "login", "admin_user", (int) $user["id"]);
+                    } catch (RuntimeException $exception) {
+                        error_log($exception->getMessage());
+                    }
 
                     header("Location: dashboard.php");
                     exit;
@@ -101,6 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <?php endif; ?>
 
             <form method="POST" action="login.php">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($token, ENT_QUOTES, "UTF-8") ?>">
                 <div class="form-field">
                     <label for="email">Email address</label>
                     <input id="email" type="email" name="email" value="<?= htmlspecialchars($email, ENT_QUOTES, "UTF-8") ?>" autocomplete="username" required>
@@ -115,6 +143,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     Sign in <i class="fas fa-arrow-right" aria-hidden="true"></i>
                 </button>
             </form>
+            <a class="login-reset-link" href="forgot-password.php">Forgot your password?</a>
 
             <p class="login-footer"><i class="fas fa-lock" aria-hidden="true"></i> Your administrator credentials are handled securely.</p>
         </section>

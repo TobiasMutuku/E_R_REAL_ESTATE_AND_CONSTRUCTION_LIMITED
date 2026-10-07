@@ -1,19 +1,24 @@
 <?php
 
 require_once __DIR__ . "/../includes/auth.php";
+requireAdminPermission("dashboard");
 require_once __DIR__ . "/../config/db.php";
+require_once __DIR__ . "/../includes/admin-ui.php";
 
 $project_count = 0;
+$published_project_count = 0;
 $property_count = 0;
+$academy_enquiry_count = 0;
 $enquiry_count = 0;
 $new_enquiry_count = 0;
 
-$sql = "SELECT COUNT(*) AS total FROM projects";
+$sql = "SELECT COUNT(*) AS total, SUM(is_published = 1) AS published FROM projects";
 $result = $conn->query($sql);
 
 if ($result) {
     $row = $result->fetch_assoc();
     $project_count = (int) $row["total"];
+    $published_project_count = (int) $row["published"];
 }
 $result = $conn->query("SELECT COUNT(*) AS total FROM properties");
 if ($result) {
@@ -21,19 +26,27 @@ if ($result) {
 }
 $result = $conn->query(
     "SELECT
-        (SELECT COUNT(*) FROM enquiries) + (SELECT COUNT(*) FROM quote_requests) AS total,
+        (SELECT COUNT(*) FROM enquiries) + (SELECT COUNT(*) FROM quote_requests) +
+        (SELECT COUNT(*) FROM academy_enquiries) AS total,
         (SELECT COUNT(*) FROM enquiries WHERE status = 'New') +
-        (SELECT COUNT(*) FROM quote_requests WHERE status = 'New') AS new_total"
+        (SELECT COUNT(*) FROM quote_requests WHERE status = 'New') +
+        (SELECT COUNT(*) FROM academy_enquiries WHERE status = 'New') AS new_total,
+        (SELECT COUNT(*) FROM academy_enquiries) AS academy_total"
 );
 if ($result) {
     $counts = $result->fetch_assoc();
     $enquiry_count = (int) $counts["total"];
     $new_enquiry_count = (int) $counts["new_total"];
+    $academy_enquiry_count = (int) $counts["academy_total"];
 }
+
+$article_result = $conn->query("SELECT COUNT(*) AS total FROM articles WHERE is_published = 1");
+$published_article_count = $article_result ? (int) $article_result->fetch_assoc()["total"] : 0;
 
 $admin_name = $_SESSION["admin_name"] ?? "Administrator";
 $admin_role = $_SESSION["admin_role"] ?? "Administrator";
 $project_created = isset($_GET["project"]) && $_GET["project"] === "created";
+$audit_failed = isset($_GET["audit"]) && $_GET["audit"] === "failed";
 $initials = "A";
 
 if ($admin_name !== "") {
@@ -63,27 +76,7 @@ $conn->close();
 </head>
 <body>
     <div class="admin-shell">
-        <aside class="admin-sidebar">
-            <a class="sidebar-brand" href="dashboard.php">
-                <img src="../logo/E&R Logo.jfif" alt="E&R Real Estate and Construction Limited logo">
-                <span><strong>E&amp;R</strong><span>Administration</span></span>
-            </a>
-
-            <p class="workspace-label">Workspace</p>
-            <nav class="sidebar-nav" aria-label="Administration navigation">
-                <a class="sidebar-link active" href="dashboard.php" aria-current="page"><i class="fas fa-chart-pie" aria-hidden="true"></i> Dashboard</a>
-                <a class="sidebar-link" href="../projects.php"><i class="fas fa-building" aria-hidden="true"></i> Projects</a>
-                <a class="sidebar-link" href="content-review.php"><i class="fas fa-clipboard-check" aria-hidden="true"></i> Content review</a>
-                <a class="sidebar-link" href="articles.php"><i class="fas fa-newspaper" aria-hidden="true"></i> Editorial CMS</a>
-                <a class="sidebar-link" href="enquiries.php"><i class="fas fa-inbox" aria-hidden="true"></i> Enquiries<?php if ($new_enquiry_count > 0): ?> <span class="nav-count"><?= $new_enquiry_count ?></span><?php endif; ?></a>
-                <a class="sidebar-link" href="settings.php"><i class="fas fa-cog" aria-hidden="true"></i> Site settings</a>
-                <a class="sidebar-link" href="../constructions.html"><i class="fas fa-globe" aria-hidden="true"></i> Public website</a>
-            </nav>
-
-            <div class="sidebar-bottom">
-                <a class="sidebar-link sidebar-signout" href="logout.php"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign out</a>
-            </div>
-        </aside>
+        <?php renderAdminSidebar("dashboard"); ?>
 
         <main class="admin-main">
             <header class="admin-header">
@@ -100,32 +93,18 @@ $conn->close();
                 <?php if ($project_created): ?>
                     <p class="saved-state" role="status"><i class="fas fa-check-circle" aria-hidden="true"></i> Project added successfully.</p>
                 <?php endif; ?>
+                <?php if ($audit_failed): ?><p class="saved-state warning-state" role="alert">The project was saved, but its audit event could not be recorded. Check the server logs before continuing.</p><?php endif; ?>
 
                 <div class="page-intro">
                     <div>
                         <p class="eyebrow">Overview</p>
                         <?php
-
-date_default_timezone_set('Africa/Nairobi');
-
-$current_hour = (int) date('H');
-
-if ($current_hour >= 00 && $current_hour < 12) {
-    $greeting = "Good morning";
-} elseif ($current_hour >= 12 && $current_hour < 17) {
-    $greeting = "Good afternoon";
-} elseif ($current_hour >= 17 && $current_hour < 0) {
-    $greeting = "Good evening";
-} else {
-    $greeting = "Good night";
-}
-
-?>
-
-<h1>
-    <?= $greeting ?>,
-    <?= htmlspecialchars($admin_name, ENT_QUOTES, "UTF-8") ?>.
-</h1>
+                        $current_hour = (int) date("G");
+                        $greeting = $current_hour < 12
+                            ? "Good morning"
+                            : ($current_hour < 17 ? "Good afternoon" : "Good evening");
+                        ?>
+                        <h1><?= $greeting ?>, <?= htmlspecialchars($admin_name, ENT_QUOTES, "UTF-8") ?>.</h1>
                         <p class="intro-copy">Keep the public E&amp;R website current from one workspace.</p>
                     </div>
                     <div class="header-actions">
@@ -151,6 +130,10 @@ if ($current_hour >= 00 && $current_hour < 12) {
                         <span class="stat-icon stat-icon-coral"><i class="fas fa-briefcase" aria-hidden="true"></i></span>
                         <div><span>New Enquiries</span><strong><?= $new_enquiry_count ?></strong><small class="stat-trend">Follow-up required</small></div>
                     </article>
+                    <article class="stat-card">
+                        <span class="stat-icon stat-icon-blue"><i class="fas fa-graduation-cap" aria-hidden="true"></i></span>
+                        <div><span>Academy enquiries</span><strong><?= $academy_enquiry_count ?></strong><small class="stat-trend">Saved for follow-up</small></div>
+                    </article>
                 </div>
 
                 <div class="content-grid">
@@ -162,7 +145,7 @@ if ($current_hour >= 00 && $current_hour < 12) {
                         <div class="activity-list">
                             <div class="activity-item">
                                 <span class="activity-icon green"><i class="fas fa-database" aria-hidden="true"></i></span>
-                                <div><strong><?= $project_count ?> project<?= $project_count === 1 ? "" : "s" ?> available</strong><p>Project records are connected to the MySQL database.</p><small>Live database count</small></div>
+                                <div><strong><?= $published_project_count ?> published project<?= $published_project_count === 1 ? "" : "s" ?></strong><p><?= $project_count ?> project records are stored in MySQL.</p><small>Only reviewed work is visible publicly</small></div>
                             </div>
                             <div class="activity-item">
                                 <span class="activity-icon brass"><i class="fas fa-lock" aria-hidden="true"></i></span>
@@ -177,11 +160,16 @@ if ($current_hour >= 00 && $current_hour < 12) {
                         <a class="quick-action" href="content-review.php"><span class="quick-icon brass"><i class="fas fa-clipboard-check" aria-hidden="true"></i></span><span><strong>Review content</strong><small>Publish verified project and property records</small></span><i class="fas fa-chevron-right" aria-hidden="true"></i></a>
                         <a class="quick-action" href="articles.php"><span class="quick-icon brass"><i class="fas fa-newspaper" aria-hidden="true"></i></span><span><strong>Manage insights</strong><small>Write and publish reviewed articles</small></span><i class="fas fa-chevron-right" aria-hidden="true"></i></a>
                         <a class="quick-action" href="enquiries.php"><span class="quick-icon blue"><i class="fas fa-inbox" aria-hidden="true"></i></span><span><strong>Track enquiries</strong><small>Update lead status and follow-up</small></span><i class="fas fa-chevron-right" aria-hidden="true"></i></a>
+                        <?php if (adminCan("accounts")): ?>
+                            <a class="quick-action" href="accounts.php"><span class="quick-icon green"><i class="fas fa-user-shield" aria-hidden="true"></i></span><span><strong>Manage team access</strong><small>Assign roles and disable accounts</small></span><i class="fas fa-chevron-right" aria-hidden="true"></i></a>
+                            <a class="quick-action" href="audit-log.php"><span class="quick-icon blue"><i class="fas fa-clipboard-list" aria-hidden="true"></i></span><span><strong>Review audit trail</strong><small>See recent administrator activity</small></span><i class="fas fa-chevron-right" aria-hidden="true"></i></a>
+                        <?php endif; ?>
                         <a class="quick-action" href="../constructions.html"><span class="quick-icon blue"><i class="fas fa-external-link-alt" aria-hidden="true"></i></span><span><strong>Preview public site</strong><small>Open the visitor-facing project portfolio</small></span><i class="fas fa-chevron-right" aria-hidden="true"></i></a>
                     </section>
                 </div>
             </section>
         </main>
     </div>
+    <script src="../js/admin-shell.js" defer></script>
 </body>
 </html>

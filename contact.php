@@ -4,6 +4,8 @@ session_start();
 
 require_once "config/db.php";
 require_once __DIR__ . "/includes/public-form-security.php";
+require_once __DIR__ . "/includes/site-mail.php";
+require_once __DIR__ . "/includes/site-settings.php";
 
 /*
 |--------------------------------------------------------------------------
@@ -238,6 +240,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             );
 
             if ($stmt->execute()) {
+                $enquiryId = (int) $conn->insert_id;
+                $notificationStatus = "failed";
+                try {
+                    $settings = loadSiteSettings($conn);
+                    $body = "New website contact enquiry.\n\nName: {$full_name}\nEmail: {$email}\nPhone: {$phone}\nType: {$enquiry_type}\nSubject: {$subject}\n\nMessage:\n{$enquiry_message}\n";
+                    $notificationStatus = sendSiteNotification(
+                        $settings["public_email"],
+                        "Website enquiry: " . $subject,
+                        $body,
+                        $email
+                    ) ? "sent" : "failed";
+                } catch (RuntimeException $exception) {
+                    error_log("Contact notification could not be prepared: " . $exception->getMessage());
+                }
+                $notificationUpdate = $conn->prepare("UPDATE enquiries SET notification_status = ? WHERE id = ?");
+                if ($notificationUpdate) {
+                    $notificationUpdate->bind_param("si", $notificationStatus, $enquiryId);
+                    if (!$notificationUpdate->execute()) {
+                        error_log("Contact notification status could not be saved: " . $notificationUpdate->error);
+                    }
+                    $notificationUpdate->close();
+                } else {
+                    error_log("Contact notification status update could not be prepared: " . $conn->error);
+                }
 
                 $success_message =
                     "Thank you. Your enquiry has been recorded for our team to review. " .
@@ -293,7 +319,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style.css?v=20261007-map-preview" rel="stylesheet">
 </head>
 
 <body>
@@ -536,13 +562,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         <p class="mb-0" data-office-address>Watamu Mall, Office 34, 1st Floor, Watamu, Kilifi County</p>
                     </div>
                     <a class="btn btn-primary mt-3 mt-md-0" data-office-directions
-                        href="https://www.google.com/maps/search/?api=1&amp;query=Watamu%20Mall%2C%20Watamu%2C%20Kilifi%20County"
-                        target="_blank" rel="noopener noreferrer">Get directions</a>
+                        href="https://www.openstreetmap.org/search?query=Watamu%20Mall%2C%20Office%2034%2C%201st%20Floor%2C%20Watamu%2C%20Kilifi%20County"
+                        target="_blank" rel="noopener noreferrer">Open location in map</a>
                 </div>
-                <iframe class="office-map" data-office-map
-                    src="https://maps.google.com/maps?q=Watamu%20Mall%2C%20Watamu%2C%20Kilifi%20County&amp;output=embed"
-                    title="Map showing the E&amp;R office at Watamu Mall"
-                    loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div class="office-map" data-office-map data-center-lat="-3.355" data-center-lon="40.02"
+                    role="img" aria-label="OpenStreetMap preview of the Watamu area near the E&amp;R office">
+                    <span class="office-map-loading" role="status">Loading the Watamu map preview…</span>
+                </div>
+                <p class="small text-muted mt-2 mb-0">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>, map style © <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a>. The marker identifies the Watamu area, not the precise office entrance.</p>
             </section>
         </div>
     </div>
@@ -560,12 +587,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <p>To Our Esteemed Clients,You Can Follow E&R REAL ESTATE AND CONSTRUCTION LIMITED On Social Media
                     Platforms</p>
                 <div class="d-flex justify-content-start mt-4">
-                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;" href="contact.php" aria-label="Contact E&R on Facebook"><i
-                            class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;" href="contact.php" aria-label="Contact E&R on LinkedIn"><i
-                            class="fab fa-linkedin-in"></i></a>
+
+
                     <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
                         style="width: 38px; height: 38px;"
                         href="https://www.instagram.com/e_r_real_estate_construction/"><i
@@ -619,8 +642,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </div>
     <div class="container-fluid py-4 px-sm-3 px-md-5">
         <p class="m-0 text-center">
-            &copy;2026 <a class="font-weight-semi-bold" href="#">E&R REAL ESTATE AND CONSTRUCTION LIMITED</a>. Terms &
-            Conditions. All Rights Reserved. <a class="ml-2" href="privacy.html">Privacy</a>
+            &copy;2026 <a class="font-weight-semi-bold" href="index.html">E&amp;R REAL ESTATE AND CONSTRUCTION LIMITED</a>. <a href="privacy.html">Privacy notice</a>. All rights reserved.
         </p>
     </div>
     <!-- Footer End -->
@@ -666,8 +688,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
-    <script src="js/site-settings.js" defer></script>
+    <script src="js/main.js?v=20261007-site-audit"></script>
+    <script src="js/site-settings.js?v=20261007-map-cartocdn2" defer></script>
 </body>
 
 </html>

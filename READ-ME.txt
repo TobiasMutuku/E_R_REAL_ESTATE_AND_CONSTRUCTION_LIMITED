@@ -2,3 +2,7 @@ E&R REAL ESTATE AND CONSTRUCTION LIMITED
 
 This project contains the public company website and PHP mail handlers.
 See README.md for local preview and production requirements.
+
+//http://localhost/E%26R%20REAL%20ESTATE%20AND%20CONSTRUCTION%20LIMITED/admin/login.php
+//Email: admin@errealestate.co.ke
+//Password: Admin123

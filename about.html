@@ -22,10 +22,54 @@
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style.css?v=20261007-about-refresh" rel="stylesheet">
+    <style>
+        .about-hero { position: relative; min-height: 480px; display: flex; align-items: center; overflow: hidden; color: #fff; background: linear-gradient(90deg,rgba(10,37,31,.95) 0%,rgba(10,37,31,.82) 48%,rgba(10,37,31,.32) 100%),url("img/5825572544151490514.jpg") center 52%/cover; }
+        .about-hero-content { width: min(100% - 36px,1180px); margin: 0 auto; padding: 82px 0; }
+        .about-hero-copy { max-width: 720px; }
+        .about-eyebrow { color: #efd39b; font-size: .75rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+        .about-hero h1 { max-width: 680px; margin: 15px 0; color: #fff; font-size: clamp(2.6rem,6vw,4.8rem); font-weight: 800; letter-spacing: -.045em; line-height: 1.04; }
+        .about-hero p { max-width: 620px; color: rgba(255,255,255,.82); font-size: clamp(1rem,1.7vw,1.16rem); line-height: 1.75; }
+        .about-hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+        .about-hero .btn { padding: 12px 19px; border-radius: 7px; font-weight: 700; }
+        .about-breadcrumb { color: rgba(255,255,255,.68); font-size: .82rem; }
+        .about-hero-image-note { position: absolute; right: 18px; bottom: 16px; padding: 7px 10px; border-radius: 5px; background: rgba(18,61,52,.82); color: rgba(255,255,255,.88); font-size: .7rem; }
+        .about-breadcrumb a { color: #fff; }
+        .about-overview { padding: 78px 0 45px; }
+        .about-image-card { position: relative; min-height: 380px; overflow: hidden; border-radius: 14px; background: #e3ebe4; box-shadow: 0 22px 48px rgba(18,61,52,.14); }
+        .about-image-card img { width: 100%; height: 100%; min-height: 380px; object-fit: cover; }
+        .about-image-label { position: absolute; right: 14px; bottom: 14px; padding: 8px 12px; border-radius: 5px; background: rgba(18,61,52,.9); color: #fff; font-size: .73rem; font-weight: 700; }
+        .about-copy { max-width: 650px; }
+        .about-copy h2,.about-process h2,.about-services h2,.about-team h2 { color: #183d34; font-size: clamp(2rem,4vw,3rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.12; }
+        .about-copy p,.about-process p,.about-team-intro { color: #65736c; line-height: 1.75; }
+        .about-section-kicker { color: #9d7840; font-size: .74rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+        .about-contact-strip { margin-top: 40px; }
+        .about-contact-card { display: flex; height: 100%; min-height: 112px; align-items: flex-start; gap: 14px; padding: 20px; border: 1px solid #e5ebe7; border-radius: 10px; background: #fff; box-shadow: 0 10px 28px rgba(18,61,52,.055); }
+        .about-contact-icon { display: grid; width: 42px; height: 42px; flex: 0 0 auto; place-items: center; border-radius: 9px; background: #edf3ef; color: #1a5545; }
+        .about-contact-card h3 { margin: 2px 0 6px; color: #183d34; font-size: .95rem; font-weight: 800; }
+        .about-contact-card p,.about-contact-card a { margin: 0; color: #697770; font-size: .82rem; line-height: 1.55; overflow-wrap: anywhere; }
+        .about-process { padding: 68px 0; background: #f5f7f4; }
+        .about-process-intro { max-width: 690px; }
+        .about-process-card { height: 100%; padding: 25px; border: 1px solid #e5ebe7; border-radius: 11px; background: #fff; box-shadow: 0 12px 30px rgba(18,61,52,.05); }
+        .about-process-number { display: grid; width: 42px; height: 42px; margin-bottom: 18px; place-items: center; border-radius: 50%; background: #17483d; color: #fff; font-weight: 800; }
+        .about-process-card h3 { color: #183d34; font-size: 1.08rem; font-weight: 800; }
+        .about-process-card p { margin: 0; font-size: .9rem; }
+        .about-services { padding: 68px 0; }
+        .about-service-card { display: flex; height: 100%; align-items: center; gap: 16px; padding: 21px; border: 1px solid #e5ebe7; border-radius: 10px; background: #fff; }
+        .about-service-card i { color: #1a5545; font-size: 1.45rem; }
+        .about-service-card h3 { margin: 0; color: #183d34; font-size: .96rem; font-weight: 800; }
+        .about-team { padding: 68px 0; background: #f5f7f4; }
+        .about-team-card { height: 100%; overflow: hidden; border: 1px solid #e5ebe7; border-radius: 11px; background: #fff; box-shadow: 0 12px 28px rgba(18,61,52,.06); }
+        .about-team-photo { width: 100%; height: 270px; object-fit: cover; object-position: center 25%; background: #e3ebe4; }
+        .about-team-card-body { padding: 18px; }
+        .about-team-card h3 { margin: 0 0 5px; color: #183d34; font-size: 1rem; font-weight: 800; }
+        .about-team-card p { margin: 0; color: #77837d; font-size: .82rem; }
+        @media (max-width: 575px) { .about-hero { min-height: 420px; background-position: 58% center; }.about-hero-content { padding: 62px 0; }.about-hero-actions .btn { flex: 1 1 100%; }.about-overview,.about-process,.about-services,.about-team { padding-top: 52px; padding-bottom: 52px; }.about-image-card,.about-image-card img { min-height: 280px; }.about-team-photo { height: 300px; } }
+        @media (prefers-reduced-motion: reduce) { .about-page *, .about-page *::before, .about-page *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+    </style>
 </head>
 
-<body>
+<body class="about-page">
     <!-- Navbar Start -->
     <div class="container-fluid nav-bar p-0">
         <div class="container-lg p-0">
@@ -44,7 +88,7 @@
                         <a href="constructions.html" class="nav-item nav-link">Projects</a>
                         <a href="real-estate.html" class="nav-item nav-link">Properties</a>
                         <a href="quote.php" class="nav-item nav-link">Get a Quote</a>
-                        <a href="contact.html" class="nav-item nav-link">Contact</a>
+                        <a href="contact.php" class="nav-item nav-link">Contact</a>
                     </div>
                 </div>
             </nav>
@@ -53,243 +97,111 @@
     <!-- Navbar End -->
 
 
-    <!-- Page Header Start -->
-    <div
-        class="container-fluid page-header d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5 mb-5">
-        <h1 class="display-4 text-white mb-3 mt-0 mt-lg-5">About</h1>
-        <div class="d-inline-flex text-white">
-            <p class="m-0"><a class="text-white" href="index.html">Home</a></p>
-            <p class="m-0 px-2">/</p>
-            <p class="m-0">About</p>
-        </div>
-    </div>
-    <!-- Page Header Start -->
-
-
-    <!-- About Start -->
-    <div class="container-fluid py-5">
-        <div class="container">
-            <div class="row align-items-center pb-1">
-                <div class="col-lg-5">
-                    <img class="img-thumbnail p-3" src="img/5825572544151490516.jpg"
-                        alt="Modern residential construction project">
+    <header class="about-hero">
+        <div class="about-hero-content">
+            <div class="about-hero-copy">
+                <p class="about-eyebrow mb-2">About E&amp;R · Watamu, Kilifi County</p>
+                <h1>Construction and property services, with a clear way forward.</h1>
+                <p>Get to know the people and practical process behind E&amp;R Real Estate and Construction Limited. Start with your project brief, explore our services, or talk with our team about a property enquiry.</p>
+                <div class="about-hero-actions">
+                    <a href="service.html" class="btn btn-primary">Explore our services <i class="fas fa-arrow-right ml-2" aria-hidden="true"></i></a>
+                    <a href="constructions.html" class="btn btn-outline-light">View project portfolio</a>
                 </div>
-                <div class="col-lg-7 mt-5 mt-lg-0">
-                    <small class="bg-primary text-white text-uppercase font-weight-bold px-1">Who We Are</small>
-                    <h1 class="mt-2 mb-4">Construction and real-estate services on Kenya's coast</h1>
-                    <p class="mb-4">E&amp;R Real Estate and Construction Limited is based in Watamu, Kilifi County.
-                        Explore our construction services and project portfolio, or contact the team to discuss a
-                        property enquiry. Project scope, pricing, schedules, and any applicable credentials are
-                        confirmed directly for each enquiry.</p>
-                    <a href="service.html" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold">Explore
-                        Services</a>
-                </div>
+                <p class="about-breadcrumb mt-4 mb-0"><a href="index.html">Home</a> <span class="mx-2" aria-hidden="true">/</span> About</p>
             </div>
-            <div class="row mt-4">
-                <div class="col-md-4">
-                    <div class="d-flex align-items-center border mb-4 mb-lg-0 p-4" style="height: 120px;">
-                        <i class="fa fa-2x fa-map-marker-alt text-primary mr-3"></i>
-                        <div class="d-flex flex-column">
-                            <h5 class="font-weight-bold">Our Office</h5>
-                            <p class="m-0">WATAMU MALL, OFFICE 34, 1ST FLOOR, WATAMU, KILIFI COUNTY</p>
+        </div>
+        <span class="about-hero-image-note">Illustrative architectural rendering</span>
+    </header>
+
+    <main>
+        <section class="about-overview">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <div class="about-image-card">
+                            <img src="img/5825572544151490516.jpg" alt="Illustrative coastal residential architectural rendering" loading="lazy" decoding="async">
+                            <span class="about-image-label">Illustrative architectural rendering</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="about-copy pl-lg-4">
+                            <p class="about-section-kicker mb-2">Who we are</p>
+                            <h2>Local roots. Practical project conversations.</h2>
+                            <p class="mt-3">E&amp;R Real Estate and Construction Limited is based in Watamu, Kilifi County. We help clients explore construction services and property enquiries, then discuss the specific site, scope, pricing, schedule, and any applicable credentials before making commitments.</p>
+                            <p>Our public project portfolio shares the records currently available. Project details are published only when confirmed; speak with the team about anything that still needs clarification.</p>
+                            <a href="quote.php" class="btn btn-primary mt-2">Talk through your project <i class="fas fa-arrow-right ml-2" aria-hidden="true"></i></a>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="d-flex align-items-center border mb-4 mb-lg-0 p-4" style="height: 120px;">
-                        <i class="fa fa-2x fa-envelope-open text-primary mr-3"></i>
-                        <div class="d-flex flex-column">
-                            <h5 class="font-weight-bold">Email Us</h5>
-                            <p class="m-0">errealestateconstruction@gmail.com</p>
-                        </div>
+
+                <div class="row about-contact-strip">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <article class="about-contact-card">
+                            <span class="about-contact-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></span>
+                            <div><h3>Visit our office</h3><p data-office-address>Watamu Mall, Office 34, 1st Floor, Watamu, Kilifi County</p><a href="geolocation.html">Open location details</a></div>
+                        </article>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="d-flex align-items-center border mb-4 mb-lg-0 p-4" style="height: 120px;">
-                        <i class="fas fa-2x fa-phone-alt text-primary mr-3"></i>
-                        <div class="d-flex flex-column">
-                            <h5 class="font-weight-bold">Call Us</h5>
-                            <p class="m-0">+254748766822</p>
-                        </div>
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <article class="about-contact-card">
+                            <span class="about-contact-icon"><i class="fas fa-envelope" aria-hidden="true"></i></span>
+                            <div><h3>Email our team</h3><a href="mailto:errealestateconstruction@gmail.com">errealestateconstruction@gmail.com</a></div>
+                        </article>
+                    </div>
+                    <div class="col-md-4">
+                        <article class="about-contact-card">
+                            <span class="about-contact-icon"><i class="fas fa-phone-alt" aria-hidden="true"></i></span>
+                            <div><h3>Call or WhatsApp</h3><a href="tel:+254748766822">+254 748 766 822</a></div>
+                        </article>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- About End -->
+        </section>
 
-
-    <!-- Features Start -->
-    <div class="container-fluid pt-5 pb-2">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 mb-5">
-                    <small class="bg-primary text-white text-uppercase font-weight-bold px-1">How we work</small>
-                    <h1 class="mt-2 mb-3">A practical approach to each project</h1>
-                    <h4 class="font-weight-normal text-muted mb-4">We start by understanding the brief, location, scope,
-                        and priorities. Pricing and schedules are discussed for each project rather than promised as
-                        fixed outcomes.</h4>
-                    <div class="list-inline mb-4">
-                        <p class="font-weight-semi-bold mb-2"><i class="fa fa-angle-right text-primary mr-2"></i>We
-                            discuss your requirements and priorities</p>
-                        <p class="font-weight-semi-bold mb-2"><i class="fa fa-angle-right text-primary mr-2"></i>We
-                            review project scope and site conditions</p>
-                        <p class="font-weight-semi-bold mb-2"><i class="fa fa-angle-right text-primary mr-2"></i>We
-                            confirm project-specific details before work proceeds</p>
-                    </div>
-                    <a href="quote.php" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold">Discuss a project</a>
+        <section class="about-process">
+            <div class="container">
+                <div class="about-process-intro mb-4">
+                    <p class="about-section-kicker mb-2">How we work</p>
+                    <h2>A practical process, shaped around your brief.</h2>
+                    <p class="mt-3 mb-0">We start by understanding the location, project scope, and priorities. Details are discussed for each enquiry rather than presented as guaranteed outcomes.</p>
                 </div>
-                <div class="col-lg-6">
-                    <div class="row">
-                        <div class="col-sm-6 pb-1">
-                            <div class="d-flex flex-column align-items-center border px-4 mb-4">
-                                <i class="fa fa-3x fa-building text-primary my-3" aria-hidden="true"></i>
-                                <h5 class="font-weight-bold mb-4">Construction</h5>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 pb-1">
-                            <div class="d-flex flex-column align-items-center border px-4 mb-4">
-                                <i class="fa fa-3x fa-drafting-compass text-primary my-3" aria-hidden="true"></i>
-                                <h5 class="font-weight-bold mb-4">Design &amp; planning</h5>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 pb-1">
-                            <div class="d-flex flex-column align-items-center border px-4 mb-4">
-                                <i class="fa fa-3x fa-bolt text-primary my-3" aria-hidden="true"></i>
-                                <h5 class="font-weight-bold mb-4">Electrical work</h5>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 pb-1">
-                            <div class="d-flex flex-column align-items-center border px-4 mb-4">
-                                <i class="fa fa-3x fa-faucet text-primary my-3" aria-hidden="true"></i>
-                                <h5 class="font-weight-bold mb-4">Plumbing work</h5>
-                            </div>
-                        </div>
-                    </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3 mb-md-0"><article class="about-process-card"><span class="about-process-number">01</span><h3>Tell us what you need</h3><p>Share your goals, location, timeline, and any early plans or questions.</p></article></div>
+                    <div class="col-md-4 mb-3 mb-md-0"><article class="about-process-card"><span class="about-process-number">02</span><h3>Review the project</h3><p>Discuss the site, the work involved, and the details that need confirmation.</p></article></div>
+                    <div class="col-md-4"><article class="about-process-card"><span class="about-process-number">03</span><h3>Agree on next steps</h3><p>Get in touch to discuss the project-specific scope, price, and schedule before proceeding.</p></article></div>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- Features End -->
+        </section>
 
-
-    <!-- Team Start -->
-    <div class="container-fluid pt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-5">
-                    <small class="bg-primary text-white text-uppercase font-weight-bold px-1">Meet The Team</small>
-                    <h1 class="mt-2 mb-3">Meet The Team Behind All The Work</h1>
-                    <h4 class="font-weight-normal text-muted mb-4">E&R REAL ESTATE AND CONSTRUCTION LIMITED Has Been
-                        Brought To Success Through Much Coordination And Cooperation By The Following Great Team.</h4>
-                    <a href="contact.html" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold">Contact Our
-                        Team</a>
+        <section class="about-services">
+            <div class="container">
+                <div class="row align-items-end mb-4">
+                    <div class="col-lg-8"><p class="about-section-kicker mb-2">What we do</p><h2 class="mb-0">Explore our services</h2></div>
+                    <div class="col-lg-4 text-lg-right mt-3 mt-lg-0"><a href="service.html" class="font-weight-bold">See all services <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i></a></div>
                 </div>
-                <div class="col-lg-8 mb-5">
-                    <div class="owl-carousel team-carousel">
-                        <div class="team-item">
-                            <div class="position-relative">
-                                <img class="img-fluid w-100" src="img/E&R Team/Elijah Mwendwa Wambua.png"
-                                    alt="Elijah Mwendwa Wambua" loading="lazy" decoding="async">
-                                <div
-                                    class="team-overlay position-absolute d-flex align-items-center justify-content-center m-3">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <a class="btn btn-outline-secondary rounded-circle text-center mr-2 px-0"
-                                            style="width: 38px; height: 38px;" href="#"><i
-                                                class="fab fa-twitter"></i></a>
-                                        <a class="btn btn-outline-secondary rounded-circle text-center mr-2 px-0"
-                                            style="width: 38px; height: 38px;" href="#"><i
-                                                class="fab fa-facebook-f"></i></a>
-                                        <a class="btn btn-outline-secondary rounded-circle text-center px-0"
-                                            style="width: 38px; height: 38px;" href="#"><i
-                                                class="fab fa-linkedin-in"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="border border-top-0 text-center" style="padding: 30px;">
-                                <h5 class="font-weight-bold">Elijah Mwendwa Wambua</h5>
-                                <span>CEO</span>
-                            </div>
-                        </div>
-                        <div class="team-item">
-                            <div class="position-relative">
-                                <img class="img-fluid w-100" src="img/E&R Team/Richard Wambua Mwendwa.png"
-                                    alt="Richard Wambua Mwendwa" loading="lazy" decoding="async">
-                                <div
-                                    class="team-overlay position-absolute d-flex align-items-center justify-content-center m-3">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <a class="btn btn-outline-secondary rounded-circle text-center mr-2 px-0"
-                                            style="width: 38px; height: 38px;" href="#"><i
-                                                class="fab fa-twitter"></i></a>
-                                        <a class="btn btn-outline-secondary rounded-circle text-center mr-2 px-0"
-                                            style="width: 38px; height: 38px;" href="#"><i
-                                                class="fab fa-facebook-f"></i></a>
-                                        <a class="btn btn-outline-secondary rounded-circle text-center px-0"
-                                            style="width: 38px; height: 38px;" href="#"><i
-                                                class="fab fa-linkedin-in"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="border border-top-0 text-center" style="padding: 30px;">
-                                <h5 class="font-weight-bold">Richard Wambua Mwendwa</h5>
-                                <span>Director</span>
-                            </div>
-                        </div>
-                        <div class="team-item">
-                            <div class="position-relative">
-                                <img class="img-fluid w-100" src="img/E&R Team/Tobias Mutuku Munyiva.jpg"
-                                    alt="Tobias Mutuku Munyiva" loading="lazy" decoding="async">
-                                <div
-                                    class="team-overlay position-absolute d-flex align-items-center justify-content-center m-3">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <a class="btn btn-outline-secondary rounded-circle text-center mr-2 px-0"
-                                            style="width: 38px; height: 38px;" href="#"><i
-                                                class="fab fa-twitter"></i></a>
-                                        <a class="btn btn-outline-secondary rounded-circle text-center mr-2 px-0"
-                                            style="width: 38px; height: 38px;" href="#"><i
-                                                class="fab fa-facebook-f"></i></a>
-                                        <a class="btn btn-outline-secondary rounded-circle text-center px-0"
-                                            style="width: 38px; height: 38px;" href="#"><i
-                                                class="fab fa-linkedin-in"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="border border-top-0 text-center" style="padding: 30px;">
-                                <h5 class="font-weight-bold">Tobias Mutuku Munyiva</h5>
-                                <span>Human Resource Director</span>
-                            </div>
-                        </div>
-                        <div class="team-item">
-                            <div class="position-relative">
-                                <img class="img-fluid w-100" src="img/E&R Team/Patricia Nzambi Mwendwa.jpeg"
-                                    alt="Patricia Nzambi Mwendwa" loading="lazy" decoding="async">
-                                <div
-                                    class="team-overlay position-absolute d-flex align-items-center justify-content-center m-3">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <a class="btn btn-outline-secondary rounded-circle text-center mr-2 px-0"
-                                            style="width: 38px; height: 38px;" href="#"><i
-                                                class="fab fa-twitter"></i></a>
-                                        <a class="btn btn-outline-secondary rounded-circle text-center mr-2 px-0"
-                                            style="width: 38px; height: 38px;" href="#"><i
-                                                class="fab fa-facebook-f"></i></a>
-                                        <a class="btn btn-outline-secondary rounded-circle text-center px-0"
-                                            style="width: 38px; height: 38px;" href="#"><i
-                                                class="fab fa-linkedin-in"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="border border-top-0 text-center" style="padding: 30px;">
-                                <h5 class="font-weight-bold">Patricia Nzambi Mwendwa</h5>
-                                <span>Team Member</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="row">
+                    <div class="col-sm-6 col-lg-3 mb-3"><a class="about-service-card" href="service.html"><i class="fas fa-building" aria-hidden="true"></i><h3>Construction</h3></a></div>
+                    <div class="col-sm-6 col-lg-3 mb-3"><a class="about-service-card" href="architecture.html"><i class="fas fa-drafting-compass" aria-hidden="true"></i><h3>Design and planning</h3></a></div>
+                    <div class="col-sm-6 col-lg-3 mb-3"><a class="about-service-card" href="electrical.html"><i class="fas fa-bolt" aria-hidden="true"></i><h3>Electrical work</h3></a></div>
+                    <div class="col-sm-6 col-lg-3 mb-3"><a class="about-service-card" href="plumbing.html"><i class="fas fa-faucet" aria-hidden="true"></i><h3>Plumbing work</h3></a></div>
                 </div>
             </div>
-        </div>
-    </div>
-    </div>
-    <!-- Team End -->
+        </section>
+
+        <section class="about-team">
+            <div class="container">
+                <div class="row align-items-end mb-4">
+                    <div class="col-lg-8"><p class="about-section-kicker mb-2">Meet the team</p><h2 class="mb-2">The people behind E&amp;R</h2><p class="about-team-intro mb-0">Meet the leadership and team members listed by E&amp;R. Contact us with questions about the right person for your enquiry.</p></div>
+                    <div class="col-lg-4 text-lg-right mt-3 mt-lg-0"><a href="contact.php" class="btn btn-outline-primary">Contact our team</a></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-lg-3 mb-4"><article class="about-team-card"><img class="about-team-photo" src="img/E&amp;R Team/Elijah Mwendwa Wambua.png" alt="Elijah Mwendwa Wambua" loading="lazy" decoding="async"><div class="about-team-card-body"><h3>Elijah Mwendwa Wambua</h3><p>CEO</p></div></article></div>
+                    <div class="col-sm-6 col-lg-3 mb-4"><article class="about-team-card"><img class="about-team-photo" src="img/E&amp;R Team/Richard Wambua Mwendwa.png" alt="Richard Wambua Mwendwa" loading="lazy" decoding="async"><div class="about-team-card-body"><h3>Richard Wambua Mwendwa</h3><p>Director</p></div></article></div>
+                    <div class="col-sm-6 col-lg-3 mb-4"><article class="about-team-card"><img class="about-team-photo" src="img/E&amp;R Team/Tobias Mutuku Munyiva.jpg" alt="Tobias Mutuku Munyiva" loading="lazy" decoding="async"><div class="about-team-card-body"><h3>Tobias Mutuku Munyiva</h3><p>Human Resource Director</p></div></article></div>
+                    <div class="col-sm-6 col-lg-3 mb-4"><article class="about-team-card"><img class="about-team-photo" src="img/E&amp;R Team/Patricia Nzambi Mwendwa.jpeg" alt="Patricia Nzambi Mwendwa" loading="lazy" decoding="async"><div class="about-team-card-body"><h3>Patricia Nzambi Mwendwa</h3><p>Team Member</p></div></article></div>
+                </div>
+            </div>
+        </section>
+    </main>
 
 
     <!-- Footer Start -->
@@ -300,15 +212,10 @@
                     <img src="logo/E&R Logo.jfif" alt="E&R Real Estate and Construction Limited logo"
                         style="height: 60px; width: auto; max-width: 200px; object-fit: contain; border-radius: 0; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.12));">
                 </a>
-                <p>To Our Esteemed Clients,You Can Follow E&R REAL ESTATE AND CONSTRUCTION LIMITED On Social Media
-                    Platforms</p>
+                <p>Construction and property services based in Watamu, Kilifi County.</p>
                 <div class="d-flex justify-content-start mt-4">
-                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;" href="contact.html" aria-label="Contact E&R on Facebook"><i
-                            class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;" href="contact.html" aria-label="Contact E&R on LinkedIn"><i
-                            class="fab fa-linkedin-in"></i></a>
+
+
                     <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
                         style="width: 38px; height: 38px;"
                         href="https://www.instagram.com/e_r_real_estate_construction/"><i
@@ -345,16 +252,15 @@
                             class="fa fa-angle-right text-primary mr-2"></i>Services</a>
                     <a class="text-white mb-2" href="constructions.html"><i
                             class="fa fa-angle-right text-primary mr-2"></i>Projects</a>
-                    <a class="text-white" href="contact.html"><i class="fa fa-angle-right text-primary mr-2"></i>Contact
+                    <a class="text-white" href="contact.php"><i class="fa fa-angle-right text-primary mr-2"></i>Contact
                         Us</a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-5">
                 <h5 class="font-weight-bold text-primary mb-4">Get In Touch</h5>
                 <p>For our services, suggestions and concerns.Reach us through</p>
-                <p><i class="fa fa-map-marker-alt text-primary mr-2"></i>WATAMU MALL, OFFICE 34, 1ST FLOOR, WATAMU,
-                    KILIFI COUNTY</p>
-                <p><i class="fa fa-phone-alt text-primary mr-2"></i>+254748766822</p>
+                <p><i class="fa fa-map-marker-alt text-primary mr-2"></i><span data-office-address>Watamu Mall, Office 34, 1st Floor, Watamu, Kilifi County</span></p>
+                <p><i class="fa fa-phone-alt text-primary mr-2"></i><a class="footer-contact-link" href="tel:+254748766822">+254 748 766 822</a></p>
                 <a class="footer-contact-link" href="mailto:errealestateconstruction@gmail.com"><i
                         class="fa fa-envelope text-primary mr-2" aria-hidden="true"></i>errealestateconstruction@gmail.com</a>
             </div>
@@ -362,8 +268,7 @@
     </div>
     <div class="container-fluid py-4 px-sm-3 px-md-5">
         <p class="m-0 text-center">
-            &copy;2026 <a class="font-weight-semi-bold" href="#">E&R REAL ESTATE AND CONSTRUCTION LIMITED</a>. Terms &
-            Conditions. All Rights Reserved.
+            &copy;2026 <a class="font-weight-semi-bold" href="index.html">E&amp;R Real Estate and Construction Limited</a>. <a href="privacy.html">Privacy notice</a>. All rights reserved.
         </p>
     </div>
     <!-- Footer End -->
@@ -382,12 +287,10 @@
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
-    <script src="js/site-settings.js" defer></script>
+    <script src="js/main.js?v=20261007-site-audit"></script>
+    <script src="js/site-settings.js?v=20261007-about-refresh" defer></script>
 </body>
 
 </html>

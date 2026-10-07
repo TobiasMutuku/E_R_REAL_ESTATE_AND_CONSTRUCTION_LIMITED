@@ -1,12 +1,14 @@
 <?php
 
 header("Content-Type: application/json; charset=utf-8");
+header("Cache-Control: no-store, max-age=0");
 
 try {
     require_once __DIR__ . "/config/db.php";
 
     $result = $conn->query(
-        "SELECT id, property_name, property_type, location, property_status
+        "SELECT id, property_name, property_type, location, price, bedrooms, bathrooms, area,
+                description, property_status, image
          FROM properties
          WHERE is_published = 1
            AND property_status IN ('Available', 'Coming Soon')
@@ -24,7 +26,13 @@ try {
             "property_name" => $property["property_name"],
             "property_type" => $property["property_type"],
             "location" => $property["location"],
+            "price" => $property["price"] !== null ? (float) $property["price"] : null,
+            "bedrooms" => $property["bedrooms"] !== null ? (int) $property["bedrooms"] : null,
+            "bathrooms" => $property["bathrooms"] !== null ? (int) $property["bathrooms"] : null,
+            "area" => $property["area"] !== null ? (float) $property["area"] : null,
+            "description" => $property["description"],
             "property_status" => $property["property_status"],
+            "image" => $property["image"],
         ];
     }
 

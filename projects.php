@@ -1,12 +1,16 @@
 <?php
 
 require_once __DIR__ . "/includes/auth.php";
+requireAdminPermission("projects");
 require_once __DIR__ . "/includes/admin-form.php";
 require_once __DIR__ . "/config/db.php";
 require_once __DIR__ . "/admin/projects/project-media.php";
-ensure_project_media_table($conn);
+require_once __DIR__ . "/includes/admin-ui.php";
+if (!project_media_table_exists($conn)) {
+    throw new RuntimeException("The project media table is missing. Apply the project media database migration.");
+}
 
-$sql = "SELECT id, project_name, location, description, project_status, start_date, completion_date, image, is_published
+$sql = "SELECT id, project_name, location, description, scope_summary, outcome_summary, project_status, start_date, completion_date, image, is_published
         FROM projects
         ORDER BY created_at DESC";
 $result = $conn->query($sql);
@@ -19,8 +23,11 @@ $admin_name = $_SESSION["admin_name"] ?? "Administrator";
 $csrf_token = adminFormToken();
 $project_count = $result->num_rows;
 $project_updated = isset($_GET["project"]) && $_GET["project"] === "updated";
+$project_created = isset($_GET["project"]) && $_GET["project"] === "created";
+$project_published = isset($_GET["project"]) && $_GET["project"] === "published";
 $project_deleted = isset($_GET["project"]) && $_GET["project"] === "deleted";
 $delete_error = isset($_GET["project"]) && $_GET["project"] === "delete-error";
+$audit_failed = isset($_GET["audit"]) && $_GET["audit"] === "failed";
 
 function project_status_class(string $status): string
 {
@@ -47,28 +54,7 @@ function project_status_class(string $status): string
 </head>
 <body>
     <div class="admin-shell">
-        <aside class="admin-sidebar">
-            <a class="sidebar-brand" href="admin/dashboard.php">
-                <img src="logo/E&R Logo.jfif" alt="E&R Real Estate and Construction Limited logo">
-                <span><strong>E&amp;R</strong><span>Administration</span></span>
-            </a>
-
-            <p class="workspace-label">Workspace</p>
-            <nav class="sidebar-nav" aria-label="Administration navigation">
-                <a class="sidebar-link" href="admin/dashboard.php"><i class="fas fa-chart-pie" aria-hidden="true"></i> Dashboard</a>
-                <a class="sidebar-link" href="admin/projects/add-project.php"><i class="fas fa-plus" aria-hidden="true"></i> Add project</a>
-                <a class="sidebar-link active" href="projects.php" aria-current="page"><i class="fas fa-building" aria-hidden="true"></i> Projects</a>
-                <a class="sidebar-link" href="admin/content-review.php"><i class="fas fa-clipboard-check" aria-hidden="true"></i> Content review</a>
-                <a class="sidebar-link" href="admin/articles.php"><i class="fas fa-newspaper" aria-hidden="true"></i> Editorial CMS</a>
-                <a class="sidebar-link" href="admin/enquiries.php"><i class="fas fa-inbox" aria-hidden="true"></i> Enquiries</a>
-                <a class="sidebar-link" href="admin/settings.php"><i class="fas fa-cog" aria-hidden="true"></i> Site settings</a>
-                <a class="sidebar-link" href="constructions.html"><i class="fas fa-globe" aria-hidden="true"></i> Public website</a>
-            </nav>
-
-            <div class="sidebar-bottom">
-                <a class="sidebar-link sidebar-signout" href="admin/logout.php"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign out</a>
-            </div>
-        </aside>
+        <?php renderAdminSidebar("projects", "root"); ?>
 
         <main class="admin-main">
             <header class="admin-header">
@@ -85,18 +71,21 @@ function project_status_class(string $status): string
                 <?php if ($project_updated): ?>
                     <p class="saved-state" role="status"><i class="fas fa-check-circle" aria-hidden="true"></i> Project updated successfully.</p>
                 <?php endif; ?>
+                <?php if ($project_created): ?><p class="saved-state" role="status">Project saved as a draft. Drafts are not public until reviewed and published.</p><?php endif; ?>
+                <?php if ($project_published): ?><p class="saved-state" role="status">Project published and now visible on the public Projects page.</p><?php endif; ?>
                 <?php if ($project_deleted): ?>
                     <p class="saved-state" role="status"><i class="fas fa-check-circle" aria-hidden="true"></i> Project deleted successfully.</p>
                 <?php endif; ?>
                 <?php if ($delete_error): ?>
                     <p class="saved-state" role="alert" style="color: #8a3f35; background: #f8e9e5;"><i class="fas fa-exclamation-circle" aria-hidden="true"></i> The project could not be deleted.</p>
                 <?php endif; ?>
+                <?php if ($audit_failed): ?><p class="saved-state warning-state" role="alert">The project change was saved, but its audit event could not be recorded. Check server logs before continuing.</p><?php endif; ?>
 
                 <div class="page-intro">
                     <div>
                         <p class="eyebrow">Project management</p>
                         <h1>Saved projects</h1>
-                        <p class="intro-copy">Review the projects currently connected to the public website.</p>
+                        <p class="intro-copy">Published projects appear on the public Projects page. Drafts stay private until their verified details are approved and published.</p>
                     </div>
                     <a class="button button-primary" href="admin/projects/add-project.php"><i class="fas fa-plus" aria-hidden="true"></i> Add project</a>
                 </div>
@@ -114,13 +103,16 @@ function project_status_class(string $status): string
                                     <h2><?= htmlspecialchars($project["project_name"], ENT_QUOTES, "UTF-8") ?></h2>
                                     <p class="project-admin-location"><i class="fas fa-map-marker-alt" aria-hidden="true"></i><?= htmlspecialchars($project["location"], ENT_QUOTES, "UTF-8") ?></p>
                                     <p class="project-admin-description"><?= htmlspecialchars($project["description"] ?: "No description added yet.", ENT_QUOTES, "UTF-8") ?></p>
+                                    <?php if (!empty($project["scope_summary"])): ?><p class="project-admin-description"><strong>Scope:</strong> <?= htmlspecialchars($project["scope_summary"], ENT_QUOTES, "UTF-8") ?></p><?php endif; ?>
+                                    <?php if (!empty($project["outcome_summary"])): ?><p class="project-admin-description"><strong>Outcome:</strong> <?= htmlspecialchars($project["outcome_summary"], ENT_QUOTES, "UTF-8") ?></p><?php endif; ?>
                                     <div class="project-admin-meta">
                                         <span class="status-tag <?= htmlspecialchars(project_status_class($project["project_status"]), ENT_QUOTES, "UTF-8") ?>"><?= htmlspecialchars($project["project_status"], ENT_QUOTES, "UTF-8") ?></span>
                                         <span class="status-tag <?= $project["is_published"] ? "completed" : "pending" ?>"><?= $project["is_published"] ? "Published" : "Draft" ?></span>
                                         <span><?= $project["start_date"] ? "Started " . htmlspecialchars($project["start_date"], ENT_QUOTES, "UTF-8") : "No start date" ?></span>
                                     </div>
+                                    <?php if (!$project["is_published"]): ?><p class="project-admin-description"><strong>Not public yet.</strong> Complete verified details and publish it to show it on the public Projects page.</p><?php endif; ?>
                                     <div class="project-card-actions">
-                                        <?php if ($project["is_published"]): ?><a class="button button-quiet" href="project-details.php?id=<?= (int) $project["id"] ?>"><i class="fas fa-eye" aria-hidden="true"></i> View details</a><?php endif; ?>
+                                        <?php if ($project["is_published"]): ?><a class="button button-quiet" href="project-details.php?id=<?= (int) $project["id"] ?>"><i class="fas fa-eye" aria-hidden="true"></i> View public page</a><?php else: ?><a class="button button-quiet" href="admin/content-review.php"><i class="fas fa-clipboard-check" aria-hidden="true"></i> Review &amp; publish</a><?php endif; ?>
                                         <a class="button button-quiet" href="admin/projects/edit-project.php?id=<?= (int) $project["id"] ?>"><i class="fas fa-pen" aria-hidden="true"></i> Edit</a>
                                         <form method="POST" action="admin/projects/delete-project.php" onsubmit="return confirm('Delete this project and its uploaded image?');">
                                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token, ENT_QUOTES, "UTF-8") ?>">
@@ -143,6 +135,7 @@ function project_status_class(string $status): string
             </section>
         </main>
     </div>
+    <script src="js/admin-shell.js" defer></script>
 </body>
 </html>
 <?php $conn->close(); ?>

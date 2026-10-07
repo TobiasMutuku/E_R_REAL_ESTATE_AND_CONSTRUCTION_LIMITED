@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style.css?v=20261007-map-preview" rel="stylesheet">
 </head>
 <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -44,16 +44,17 @@
             <p class="mb-3" data-office-address>Watamu Mall, Office 34, 1st Floor, Watamu, Kilifi County</p>
             <div class="d-flex flex-wrap align-items-center mb-4">
                 <a class="btn btn-primary mr-3 mb-2" data-office-directions
-                    href="https://www.google.com/maps/search/?api=1&amp;query=Watamu%20Mall%2C%20Watamu%2C%20Kilifi%20County"
+                    href="https://www.openstreetmap.org/search?query=Watamu%20Mall%2C%20Office%2034%2C%201st%20Floor%2C%20Watamu%2C%20Kilifi%20County"
                     target="_blank" rel="noopener noreferrer">
-                    <i class="fa fa-directions mr-2" aria-hidden="true"></i>Get directions
+                    <i class="fa fa-directions mr-2" aria-hidden="true"></i>Open location in map
                 </a>
                 <a class="mb-2" href="contact.php">Contact our team</a>
             </div>
-            <iframe class="office-map" data-office-map
-                src="https://maps.google.com/maps?q=Watamu%20Mall%2C%20Watamu%2C%20Kilifi%20County&amp;output=embed"
-                title="Map showing the E&amp;R office at Watamu Mall"
-                loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="office-map" data-office-map data-center-lat="-3.355" data-center-lon="40.02"
+                role="img" aria-label="OpenStreetMap preview of the Watamu area near the E&amp;R office">
+                <span class="office-map-loading" role="status">Loading the Watamu map preview…</span>
+            </div>
+            <p class="small text-muted mt-2">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>, map style © <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a>. The marker identifies the Watamu area, not the precise office entrance.</p>
         </div>
     </main>
 
@@ -62,6 +63,6 @@
     </footer>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="js/site-settings.js" defer></script>
+    <script src="js/site-settings.js?v=20261007-map-cartocdn2" defer></script>
 </body>
 </html>

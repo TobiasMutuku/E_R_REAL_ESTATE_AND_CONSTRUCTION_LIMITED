@@ -1,10 +1,14 @@
 <?php
 
 require_once __DIR__ . "/../../includes/auth.php";
+requireAdminPermission("projects");
 require_once __DIR__ . "/../../includes/admin-form.php";
 require_once __DIR__ . "/../../config/db.php";
 require_once __DIR__ . "/project-media.php";
-ensure_project_media_table($conn);
+require_once __DIR__ . "/../../includes/admin-audit.php";
+if (!project_media_table_exists($conn)) {
+    throw new RuntimeException("The project media table is missing. Apply the project media database migration.");
+}
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: ../../projects.php");
@@ -49,6 +53,16 @@ $delete_stmt->bind_param("i", $project_id);
 $deleted = $delete_stmt->execute();
 $delete_stmt->close();
 
+$auditFailed = false;
+if ($deleted) {
+    try {
+        recordAdminAudit($conn, "delete_project", "project", (int) $project_id);
+    } catch (RuntimeException $exception) {
+        error_log($exception->getMessage());
+        $auditFailed = true;
+    }
+}
+
 if ($deleted && !empty($project["image"]) && str_starts_with($project["image"], "uploads/projects/")) {
     delete_project_media_file($project["image"]);
 }
@@ -60,5 +74,5 @@ if ($deleted) {
 }
 
 $conn->close();
-header("Location: ../../projects.php?project=" . ($deleted ? "deleted" : "delete-error"));
+header("Location: ../../projects.php?project=" . ($deleted ? "deleted" : "delete-error") . ($auditFailed ? "&audit=failed" : ""));
 exit;

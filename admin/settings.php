@@ -1,8 +1,11 @@
 <?php
 require_once __DIR__ . "/../includes/auth.php";
+requireAdminPermission("settings");
 require_once __DIR__ . "/../includes/admin-form.php";
 require_once __DIR__ . "/../includes/site-settings.php";
+require_once __DIR__ . "/../includes/admin-audit.php";
 require_once __DIR__ . "/../config/db.php";
+require_once __DIR__ . "/../includes/admin-ui.php";
 
 $settings = loadSiteSettings($conn);
 $token = adminFormToken();
@@ -29,6 +32,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else {
         saveSiteSettings($conn, $settings);
         $saved = true;
+        try {
+            recordAdminAudit($conn, "update_site_settings", "site_settings");
+        } catch (RuntimeException $exception) {
+            error_log($exception->getMessage());
+            $error = "Settings were saved, but the audit event could not be recorded. Check server logs.";
+        }
     }
 }
 $adminName = $_SESSION["admin_name"] ?? "Administrator";
@@ -39,23 +48,12 @@ $adminName = $_SESSION["admin_name"] ?? "Administrator";
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Site settings | E&amp;R Administration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css">
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body>
 <div class="admin-shell">
-    <aside class="admin-sidebar">
-        <a class="sidebar-brand" href="dashboard.php"><img src="../logo/E&R Logo.jfif" alt=""><span><strong>E&amp;R</strong><span>Administration</span></span></a>
-        <p class="workspace-label">Workspace</p>
-        <nav class="sidebar-nav" aria-label="Administration navigation">
-            <a class="sidebar-link" href="dashboard.php">Dashboard</a>
-            <a class="sidebar-link" href="../projects.php">Projects</a>
-            <a class="sidebar-link" href="content-review.php">Content review</a>
-            <a class="sidebar-link" href="articles.php">Editorial CMS</a>
-            <a class="sidebar-link" href="enquiries.php">Enquiries</a>
-            <a class="sidebar-link active" href="settings.php" aria-current="page">Site settings</a>
-        </nav>
-        <div class="sidebar-bottom"><a class="sidebar-link sidebar-signout" href="logout.php">Sign out</a></div>
-    </aside>
+    <?php renderAdminSidebar("settings"); ?>
     <main class="admin-main">
         <header class="admin-header"><div class="breadcrumbs"><span>Workspace</span><strong>Site settings</strong></div><div class="user-chip"><strong><?= htmlspecialchars($adminName, ENT_QUOTES, "UTF-8") ?></strong></div></header>
         <section class="admin-content">
@@ -78,5 +76,6 @@ $adminName = $_SESSION["admin_name"] ?? "Administrator";
         </section>
     </main>
 </div>
+<script src="../js/admin-shell.js" defer></script>
 </body>
 </html>

@@ -8,7 +8,9 @@ $database = getenv("ER_DB_NAME") ?: "er_real_estate";
 $conn = new mysqli($host, $username, $password, $database);
 
 if ($conn->connect_error) {
-    die("Database connection failed: " . $conn->connect_error);
+    error_log("Database connection failed: " . $conn->connect_error);
+    http_response_code(503);
+    exit("The service is temporarily unavailable. Please try again later.");
 }
 
 ?>

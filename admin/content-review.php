@@ -1,7 +1,11 @@
 <?php
 require_once __DIR__ . "/../includes/auth.php";
+requireAdminPermission("content");
 require_once __DIR__ . "/../includes/admin-form.php";
 require_once __DIR__ . "/../config/db.php";
+require_once __DIR__ . "/../includes/admin-ui.php";
+require_once __DIR__ . "/../includes/admin-audit.php";
+require_once __DIR__ . "/projects/project-media.php";
 
 $token = adminFormToken();
 $error = "";
@@ -21,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($action === "review_project" && $id) {
             $publish = adminPostString("publish") === "1";
             $confirmed = adminPostString("confirm_facts") === "1";
-            $statement = $conn->prepare("SELECT project_name, location, description, image FROM projects WHERE id = ? LIMIT 1");
+            $statement = $conn->prepare("SELECT project_name, location, description, scope_summary, outcome_summary, image FROM projects WHERE id = ? LIMIT 1");
             $statement->bind_param("i", $id);
             $statement->execute();
             $project = $statement->get_result()->fetch_assoc();
@@ -32,16 +36,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             } elseif ($publish && (
                 !$confirmed
                 || trim($project["description"] ?? "") === ""
-                || empty($project["image"])
+                || trim($project["scope_summary"] ?? "") === ""
+                || trim($project["outcome_summary"] ?? "") === ""
+                || !project_cover_image_exists((string) ($project["image"] ?? ""))
                 || trim($project["location"]) === ""
             )) {
-                $error = "To publish, confirm the facts and add a factual summary, location, and cover photo.";
+                $error = "To publish, confirm the facts and add a factual summary, verified scope and outcome, location, and a valid cover photo.";
             } else {
                 $statement = $conn->prepare("UPDATE projects SET is_published = ? WHERE id = ?");
                 $published = $publish ? 1 : 0;
                 $statement->bind_param("ii", $published, $id);
                 if ($statement->execute()) {
                     $notice = $publish ? "Project published." : "Project withdrawn from the public website.";
+                    try {
+                        recordAdminAudit($conn, $publish ? "publish_project" : "withdraw_project", "project", (int) $id);
+                    } catch (RuntimeException $exception) {
+                        error_log($exception->getMessage());
+                        $error = "The review decision was saved, but its audit event could not be recorded. Check server logs.";
+                    }
                 } else {
                     $error = "The project review decision could not be saved.";
                 }
@@ -71,6 +83,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $statement->bind_param("ii", $published, $id);
                 if ($statement->execute()) {
                     $notice = $publish ? "Property published." : "Property withdrawn from the public website.";
+                    try {
+                        recordAdminAudit($conn, $publish ? "publish_property" : "withdraw_property", "property", (int) $id);
+                    } catch (RuntimeException $exception) {
+                        error_log($exception->getMessage());
+                        $error = "The review decision was saved, but its audit event could not be recorded. Check server logs.";
+                    }
                 } else {
                     $error = "The property review decision could not be saved.";
                 }
@@ -90,6 +108,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $statement->bind_param("ssi", $status, $status, $id);
                 if ($statement->execute()) {
                     $notice = "Property availability updated.";
+                    try {
+                        recordAdminAudit($conn, "update_property_availability", "property", (int) $id, ["status" => $status]);
+                    } catch (RuntimeException $exception) {
+                        error_log($exception->getMessage());
+                        $error = "Availability was saved, but its audit event could not be recorded. Check server logs.";
+                    }
                 } else {
                     $error = "Property availability could not be updated.";
                 }
@@ -151,6 +175,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $statement->bind_param("sssdiidsss", $name, $type, $location, $price, $bedrooms, $bathrooms, $area, $description, $status, $imagePath);
                 if ($statement->execute()) {
                     $notice = "Property saved as an unpublished draft. Review its details before publishing.";
+                    try {
+                        recordAdminAudit($conn, "create_property_draft", "property", (int) $conn->insert_id);
+                    } catch (RuntimeException $exception) {
+                        error_log($exception->getMessage());
+                        $error = "The property draft was saved, but its audit event could not be recorded. Check server logs.";
+                    }
                 } else {
                     if ($imagePath !== null) {
                         unlink(dirname(__DIR__) . DIRECTORY_SEPARATOR . $imagePath);
@@ -165,11 +195,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-$projects = $conn->query("SELECT id, project_name, location, description, project_status, start_date, completion_date, image, is_published FROM projects ORDER BY updated_at DESC");
+$projects = $conn->query("SELECT id, project_name, location, description, scope_summary, outcome_summary, project_status, start_date, completion_date, image, is_published FROM projects ORDER BY updated_at DESC");
 $properties = $conn->query("SELECT id, property_name, property_type, location, price, bedrooms, bathrooms, area, description, property_status, image, is_published FROM properties ORDER BY updated_at DESC");
 if (!$projects || !$properties) {
     throw new RuntimeException("Content records could not be loaded.");
 }
+$notice = $notice ?: (isset($_GET["property"]) && $_GET["property"] === "updated" ? "Property details were saved as an unpublished draft." : "");
 $adminName = $_SESSION["admin_name"] ?? "Administrator";
 ?>
 <!DOCTYPE html>
@@ -178,23 +209,12 @@ $adminName = $_SESSION["admin_name"] ?? "Administrator";
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Content review | E&amp;R Administration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css">
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body>
 <div class="admin-shell">
-    <aside class="admin-sidebar">
-        <a class="sidebar-brand" href="dashboard.php"><img src="../logo/E&R Logo.jfif" alt=""><span><strong>E&amp;R</strong><span>Administration</span></span></a>
-        <p class="workspace-label">Workspace</p>
-        <nav class="sidebar-nav" aria-label="Administration navigation">
-            <a class="sidebar-link" href="dashboard.php">Dashboard</a>
-            <a class="sidebar-link" href="../projects.php">Projects</a>
-            <a class="sidebar-link active" href="content-review.php" aria-current="page">Content review</a>
-            <a class="sidebar-link" href="articles.php">Editorial CMS</a>
-            <a class="sidebar-link" href="enquiries.php">Enquiries</a>
-            <a class="sidebar-link" href="settings.php">Site settings</a>
-        </nav>
-        <div class="sidebar-bottom"><a class="sidebar-link sidebar-signout" href="logout.php">Sign out</a></div>
-    </aside>
+    <?php renderAdminSidebar("content"); ?>
     <main class="admin-main">
         <header class="admin-header"><div class="breadcrumbs"><span>Workspace</span><strong>Content review</strong></div><div class="user-chip"><strong><?= htmlspecialchars($adminName, ENT_QUOTES, "UTF-8") ?></strong></div></header>
         <section class="admin-content">
@@ -218,7 +238,8 @@ $adminName = $_SESSION["admin_name"] ?? "Administrator";
                         <label>Bathrooms<input name="bathrooms" type="number" min="0" step="1"></label>
                         <label class="full-width">Factual description<textarea name="description" rows="4" maxlength="5000"></textarea></label>
                         <label class="full-width">Property photo (JPG, PNG, WebP; max 5 MB)<input name="image" type="file" accept="image/jpeg,image/png,image/webp"></label>
-                        <div class="settings-actions"><span>Saved as unpublished</span><button class="button button-primary" type="submit">Save property draft</button></div>
+                        <div class="settings-actions">
+                            <span>Saved as unpublished</span><button class="button button-primary" type="submit">Save property draft</button></div>
                     </div>
                 </form>
             </section>
@@ -228,13 +249,14 @@ $adminName = $_SESSION["admin_name"] ?? "Administrator";
                 <?php while ($project = $projects->fetch_assoc()): ?>
                     <article class="activity-item">
                         <?php if ($project["image"]): ?><img src="../<?= htmlspecialchars($project["image"], ENT_QUOTES, "UTF-8") ?>" alt="<?= htmlspecialchars($project["project_name"], ENT_QUOTES, "UTF-8") ?> review photo" loading="lazy" style="width: 100px; height: 72px; object-fit: cover; border-radius: 6px;"><?php endif; ?>
-                        <div><strong><?= htmlspecialchars($project["project_name"], ENT_QUOTES, "UTF-8") ?></strong><p><?= htmlspecialchars($project["location"], ENT_QUOTES, "UTF-8") ?> · <?= htmlspecialchars($project["project_status"], ENT_QUOTES, "UTF-8") ?> · <?= $project["start_date"] ? htmlspecialchars($project["start_date"], ENT_QUOTES, "UTF-8") : "No start date" ?><?= $project["completion_date"] ? " to " . htmlspecialchars($project["completion_date"], ENT_QUOTES, "UTF-8") : "" ?></p><small><?= htmlspecialchars($project["description"] ?: "No factual summary yet.", ENT_QUOTES, "UTF-8") ?> · <?= $project["image"] ? "Cover photo present" : "No cover photo" ?></small></div>
+                        <div><strong><?= htmlspecialchars($project["project_name"], ENT_QUOTES, "UTF-8") ?></strong><p><?= htmlspecialchars($project["location"], ENT_QUOTES, "UTF-8") ?> · <?= htmlspecialchars($project["project_status"], ENT_QUOTES, "UTF-8") ?> · <?= $project["start_date"] ? htmlspecialchars($project["start_date"], ENT_QUOTES, "UTF-8") : "No start date" ?><?= $project["completion_date"] ? " to " . htmlspecialchars($project["completion_date"], ENT_QUOTES, "UTF-8") : "" ?></p><small><?= htmlspecialchars($project["description"] ?: "No factual summary yet.", ENT_QUOTES, "UTF-8") ?></small><small>Scope: <?= htmlspecialchars($project["scope_summary"] ?: "Not provided", ENT_QUOTES, "UTF-8") ?> · Outcome: <?= htmlspecialchars($project["outcome_summary"] ?: "Not provided", ENT_QUOTES, "UTF-8") ?> · <?= project_cover_image_exists((string) ($project["image"] ?? "")) ? "Valid cover photo" : "Cover photo required" ?></small><?php if (!$project["is_published"]): ?><small class="d-block mt-2">Drafts are private. Complete any missing facts, then confirm to publish.</small><?php endif; ?></div>
+                        <a class="button button-secondary" href="projects/edit-project.php?id=<?= (int) $project["id"] ?>">Edit details</a>
                         <form method="post">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($token, ENT_QUOTES, "UTF-8") ?>">
                             <input type="hidden" name="action" value="review_project">
                             <input type="hidden" name="id" value="<?= (int) $project["id"] ?>">
                             <input type="hidden" name="publish" value="<?= $project["is_published"] ? "0" : "1" ?>">
-                            <?php if (!$project["is_published"]): ?><label class="remember-option"><input type="checkbox" name="confirm_facts" value="1" required> I verified the project facts, photo, scope, and status.</label><?php endif; ?>
+                            <?php if (!$project["is_published"]): ?><label class="remember-option"><input type="checkbox" name="confirm_facts" value="1" required> I verified the project facts, photo, scope, outcome, and status.</label><?php endif; ?>
                             <button class="button <?= $project["is_published"] ? "button-danger" : "button-primary" ?>" type="submit"><?= $project["is_published"] ? "Withdraw" : "Publish" ?></button>
                         </form>
                     </article>
@@ -247,6 +269,7 @@ $adminName = $_SESSION["admin_name"] ?? "Administrator";
                     <article class="activity-item">
                         <?php if ($property["image"]): ?><img src="../<?= htmlspecialchars($property["image"], ENT_QUOTES, "UTF-8") ?>" alt="<?= htmlspecialchars($property["property_name"], ENT_QUOTES, "UTF-8") ?> review photo" loading="lazy" style="width: 100px; height: 72px; object-fit: cover; border-radius: 6px;"><?php endif; ?>
                         <div><strong><?= htmlspecialchars($property["property_name"], ENT_QUOTES, "UTF-8") ?></strong><p><?= htmlspecialchars($property["location"], ENT_QUOTES, "UTF-8") ?> · <?= htmlspecialchars($property["property_type"], ENT_QUOTES, "UTF-8") ?> · <?= htmlspecialchars($property["property_status"], ENT_QUOTES, "UTF-8") ?><?= $property["price"] !== null ? " · KSh " . number_format((float) $property["price"], 2) : "" ?><?= $property["bedrooms"] !== null ? " · " . (int) $property["bedrooms"] . " bedrooms" : "" ?><?= $property["bathrooms"] !== null ? " · " . (int) $property["bathrooms"] . " bathrooms" : "" ?><?= $property["area"] !== null ? " · " . number_format((float) $property["area"], 2) . " area" : "" ?></p><small><?= htmlspecialchars($property["description"] ?: "No factual description yet.", ENT_QUOTES, "UTF-8") ?> · <?= $property["image"] ? "Photo present" : "No photo" ?></small></div>
+                        <a class="button button-secondary" href="edit-property.php?id=<?= (int) $property["id"] ?>">Edit details</a>
                         <form method="post">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($token, ENT_QUOTES, "UTF-8") ?>">
                             <input type="hidden" name="action" value="property_status">
@@ -269,5 +292,6 @@ $adminName = $_SESSION["admin_name"] ?? "Administrator";
     </main>
 </div>
 <script src="../js/admin-image-optimizer.js"></script>
+<script src="../js/admin-shell.js" defer></script>
 </body>
 </html>

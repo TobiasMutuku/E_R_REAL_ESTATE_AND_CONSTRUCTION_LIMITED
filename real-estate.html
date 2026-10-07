@@ -12,7 +12,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style.css?v=20261007-site-audit" rel="stylesheet">
+    <style>
+        .property-hero { position: relative; overflow: hidden; padding: clamp(68px, 9vw, 112px) 0; color: #fff; background: linear-gradient(110deg, #123d34 0%, #1c5747 67%, #316d59 100%); }
+        .property-hero::after { position: absolute; top: -38%; right: -7%; width: min(50vw, 620px); aspect-ratio: 1; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; box-shadow: 0 0 0 42px rgba(255,255,255,.035),0 0 0 84px rgba(255,255,255,.025); content: ""; }
+        .property-hero-content { position: relative; z-index: 1; max-width: 830px; }
+        .property-hero .eyebrow { color: #efd39b; font-size: .74rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+        .property-hero h1 { max-width: 780px; margin: 14px 0; color: #fff; font-size: clamp(2.5rem, 6vw, 4.6rem); font-weight: 800; letter-spacing: -.045em; line-height: 1.05; }
+        .property-hero p { max-width: 660px; color: rgba(255,255,255,.78); font-size: 1.05rem; line-height: 1.75; }
+        .property-section { max-width: 1240px; }
+        .property-grid { row-gap: 8px; }
+        .property-card { height: 100%; overflow: hidden; border: 1px solid #e5ebe7; border-radius: 13px; background: #fff; box-shadow: 0 12px 32px rgba(20,53,44,.07); transition: transform .22s ease, box-shadow .22s ease; }
+        .property-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(20,53,44,.13); }
+        .property-card-media { position: relative; height: 240px; overflow: hidden; background: linear-gradient(135deg,#d9e5da,#edf1e9); }
+        .property-card-media img { width: 100%; height: 100%; object-fit: cover; }
+        .property-card-media .property-art-placeholder { display: grid; width: 100%; height: 100%; place-items: center; background: radial-gradient(ellipse at 50% 120%,#c8d9c2 0 35%,transparent 36%),linear-gradient(160deg,#dfe9e2 0 50%,#d1decf 51% 100%); color: #47705d; }
+        .property-art-placeholder i { font-size: 3rem; }
+        .property-image-note { position: absolute; right: 12px; bottom: 12px; padding: 6px 9px; border-radius: 5px; background: rgba(18,61,52,.88); color: #fff; font-size: .68rem; font-weight: 700; }
+        .property-card-body { padding: 21px; }
+        .property-badge { display: inline-flex; margin-right: 6px; padding: 6px 9px; border-radius: 999px; background: #edf3ef; color: #285849; font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+        .property-card h2 { margin: 14px 0 7px; color: #183d34; font-size: 1.2rem; font-weight: 800; line-height: 1.35; }
+        .property-location { color: #738079; font-size: .84rem; }
+        .property-description { margin: 13px 0 16px; color: #596a62; font-size: .88rem; line-height: 1.65; }
+        .property-facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+        .property-fact { padding: 6px 9px; border: 1px solid #e8ede9; border-radius: 5px; color: #53655d; font-size: .75rem; }
+        .property-price { margin-bottom: 13px; color: #17483d; font-size: 1rem; font-weight: 800; }
+        .property-enquire { width: 100%; border-radius: 6px; font-weight: 800; }
+        .property-disclaimer { padding: 17px 20px; border-left: 3px solid #c9a35b; border-radius: 5px; background: #f8f7f1; color: #66736c; font-size: .86rem; line-height: 1.65; }
+        .property-empty { padding: 42px 20px; border: 1px dashed #ccd8d0; border-radius: 12px; background: #f8faf8; }
+        @media (max-width: 575px) { .property-card-media { height: 220px; } }
+        @media (prefers-reduced-motion: reduce) { .property-card { transition: none; } }
+    </style>
 </head>
 
 <body>
@@ -30,7 +60,7 @@
                             class="nav-item nav-link">Projects</a><a href="real-estate.html"
                             class="nav-item nav-link active">Properties</a><a href="about.html"
                             class="nav-item nav-link">About</a><a href="quote.php"
-                            class="nav-item nav-link">Get a Quote</a><a href="contact.html"
+                            class="nav-item nav-link">Get a Quote</a><a href="contact.php"
                             class="nav-item nav-link">Contact</a>
                     </div>
                 </div>
@@ -38,30 +68,27 @@
         </div>
     </div>
 
-    <div
-        class="container-fluid page-header d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5 mb-5">
-        <h1 class="display-4 text-white mb-3 mt-0 mt-lg-5">Properties</h1>
-        <div class="d-inline-flex text-white">
-            <p class="m-0"><a class="text-white" href="index.html">Home</a></p>
-            <p class="m-0 px-2">/</p>
-            <p class="m-0">Properties</p>
+    <header class="property-hero">
+        <div class="container property-hero-content">
+            <p class="eyebrow mb-2">E&amp;R real estate</p>
+            <h1>Find a place to call yours.</h1>
+            <p>Explore property opportunities and concepts. We clearly flag illustrative visuals and details that still need confirmation, so you know what to ask before you enquire.</p>
+            <a href="#property-listings" class="btn btn-primary mt-2">Explore properties <i class="fas fa-arrow-down ml-2" aria-hidden="true"></i></a>
         </div>
-    </div>
+    </header>
 
-    <main class="container py-5">
-        <div class="row justify-content-center mb-5">
-            <div class="col-lg-8 text-center"><small
-                    class="bg-primary text-white text-uppercase font-weight-bold px-1">Real Estate</small>
-                <h1 class="mt-2 mb-3">Current property opportunities</h1>
-                <p class="text-muted">Browse properties currently marked available or coming soon. Confirm price,
-                    availability, and other details with our team before making a decision.</p>
+    <main class="container property-section py-5" id="property-listings">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-8 text-center">
+                <p class="text-primary text-uppercase font-weight-bold mb-2">Property portfolio</p>
+                <h2 class="mb-3" style="color:#183d34;font-weight:800;">A clearer view of what's on offer</h2>
+                <p class="text-muted">Use each listing to start a conversation. Prices, title, availability and specifications will be shown only when verified.</p>
             </div>
         </div>
-        <div class="row" id="propertyGrid" aria-live="polite">
+        <div class="row property-grid" id="propertyGrid" aria-live="polite" aria-busy="true">
             <div class="col-12 text-center py-4" role="status">Loading current property records...</div>
         </div>
-        <p class="small text-muted text-center mt-3">Availability and pricing can change. Please confirm details with
-            our team.</p>
+        <div class="property-disclaimer mt-3"><strong>Important:</strong> These are illustrative concepts, not confirmed properties for sale. Any architectural rendering is illustrative, not a photo of an actual listing. Confirm the property, location, title, price, availability and specifications directly with E&amp;R.</div>
         <div class="text-center mt-4">
             <p class="mb-3">Need help evaluating a property or planning construction?</p><a href="quote.php"
                 class="btn btn-primary mr-2">Request a quote</a><a
@@ -87,7 +114,7 @@
             <div class="col-lg-4 mb-5">
                 <h5 class="font-weight-bold text-primary mb-4">Explore</h5><a class="text-white d-block mb-2"
                     href="constructions.html">Project portfolio</a><a class="text-white d-block mb-2"
-                    href="quote.php">Request a quote</a><a class="text-white d-block" href="contact.html">Contact
+                    href="quote.php">Request a quote</a><a class="text-white d-block" href="contact.php">Contact
                     us</a>
             </div>
         </div>
@@ -108,12 +135,25 @@
             .replace(/'/g, "&#039;");
 
         const propertyCard = (property) => `<div class="col-md-6 col-lg-4 mb-4">
-            <article class="border h-100 bg-white p-4">
-                <span class="badge badge-primary mb-3">${escapeHtml(property.property_status)}</span>
-                <h2 class="h4">${escapeHtml(property.property_name)}</h2>
-                <p class="text-muted mb-2">${escapeHtml(property.property_type)}</p>
-                <p class="text-muted"><i class="fa fa-map-marker-alt text-primary mr-2" aria-hidden="true"></i>${escapeHtml(property.location)}</p>
-                <a class="btn btn-outline-primary" href="quote.php?property_id=${Number(property.id)}">Enquire about this property</a>
+            <article class="property-card">
+                <div class="property-card-media">
+                    ${property.image ? `<img src="${escapeHtml(property.image)}" alt="${escapeHtml(property.property_name)} illustrative architectural rendering" loading="lazy" decoding="async">` : `<div class="property-art-placeholder" role="img" aria-label="Illustrative property graphic"><i class="fas ${property.property_type === "Land" ? "fa-map-marked-alt" : "fa-home"}" aria-hidden="true"></i></div>`}
+                    <span class="property-image-note">${property.image ? "Illustrative rendering" : "Concept graphic · no verified photo"}</span>
+                </div>
+                <div class="property-card-body">
+                    <span class="property-badge">${escapeHtml(property.property_type)}</span>
+                    <span class="property-badge">${escapeHtml(property.property_status)}</span>
+                    <h2>${escapeHtml(property.property_name)}</h2>
+                    <p class="property-location mb-0"><i class="fa fa-map-marker-alt text-primary mr-2" aria-hidden="true"></i>${escapeHtml(property.location)}</p>
+                    ${property.price !== null ? `<p class="property-price mt-3 mb-0">KSh ${Number(property.price).toLocaleString("en-KE")}</p>` : ""}
+                    <div class="property-facts mt-3">
+                        ${property.bedrooms !== null ? `<span class="property-fact"><i class="fas fa-bed mr-1" aria-hidden="true"></i>${Number(property.bedrooms)} bedrooms</span>` : ""}
+                        ${property.bathrooms !== null ? `<span class="property-fact"><i class="fas fa-bath mr-1" aria-hidden="true"></i>${Number(property.bathrooms)} bathrooms</span>` : ""}
+                        ${property.area !== null ? `<span class="property-fact"><i class="fas fa-ruler-combined mr-1" aria-hidden="true"></i>${Number(property.area).toLocaleString("en-KE")} area units</span>` : ""}
+                    </div>
+                    ${property.description ? `<p class="property-description">${escapeHtml(property.description)}</p>` : ""}
+                    <a class="btn btn-primary property-enquire" href="quote.php?property_id=${Number(property.id)}">Ask us about this listing <i class="fas fa-arrow-right ml-2" aria-hidden="true"></i></a>
+                </div>
             </article>
         </div>`;
 
@@ -124,13 +164,15 @@
             })
             .then((properties) => {
                 if (!Array.isArray(properties)) throw new Error("Property data is unavailable.");
+                propertyGrid.setAttribute("aria-busy", "false");
                 propertyGrid.innerHTML = properties.length
                     ? properties.map(propertyCard).join("")
-                    : '<div class="col-12 text-center py-4"><p class="text-muted">No current property listings are available. Contact our team to discuss what you are looking for.</p><a class="btn btn-primary" href="quote.php">Make a property enquiry</a></div>';
+                    : '<div class="col-12"><div class="property-empty text-center"><h3 class="h4">No property records are published yet</h3><p class="text-muted">Contact our team to discuss what you are looking for.</p><a class="btn btn-primary" href="quote.php">Make a property enquiry</a></div></div>';
             })
             .catch((error) => {
                 console.error("Unable to load current property records.", error);
-                propertyGrid.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Current property records are temporarily unavailable. Please contact our team for availability.</p><a class="btn btn-primary" href="contact.html">Contact E&amp;R</a></div>';
+                propertyGrid.setAttribute("aria-busy", "false");
+                propertyGrid.innerHTML = '<div class="col-12"><div class="property-empty text-center" role="alert"><h3 class="h4">Property records are temporarily unavailable</h3><p class="text-muted">Please try again or contact our team for current information.</p><button type="button" class="btn btn-primary mr-2" onclick="location.reload()">Try again</button><a class="btn btn-outline-primary" href="contact.php">Contact E&amp;R</a></div></div>';
             });
     </script>
 </body>

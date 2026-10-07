@@ -1,9 +1,12 @@
 <?php
 
 require_once __DIR__ . "/../../includes/auth.php";
+requireAdminPermission("projects");
 require_once __DIR__ . "/../../includes/admin-form.php";
 require_once __DIR__ . "/../../config/db.php";
 require_once __DIR__ . "/project-media.php";
+require_once __DIR__ . "/../../includes/admin-ui.php";
+require_once __DIR__ . "/../../includes/admin-audit.php";
 
 $project_id = filter_input(INPUT_GET, "id", FILTER_VALIDATE_INT);
 if (!$project_id) {
@@ -21,9 +24,11 @@ $error = "";
 $success = "";
 $media_directory = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . "uploads" . DIRECTORY_SEPARATOR . "projects";
 $csrf_token = adminFormToken();
-ensure_project_media_table($conn);
+if (!project_media_table_exists($conn)) {
+    throw new RuntimeException("The project media table is missing. Apply the project media database migration.");
+}
 
-$load_stmt = $conn->prepare("SELECT project_name, location, description, project_status, start_date, completion_date, image FROM projects WHERE id = ? LIMIT 1");
+$load_stmt = $conn->prepare("SELECT project_name, location, description, scope_summary, outcome_summary, project_status, start_date, completion_date, image FROM projects WHERE id = ? LIMIT 1");
 $load_stmt->bind_param("i", $project_id);
 $load_stmt->execute();
 $project_result = $load_stmt->get_result();
@@ -40,12 +45,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $project["project_name"] = trim($_POST["project_name"] ?? "");
     $project["location"] = trim($_POST["location"] ?? "");
     $project["description"] = trim($_POST["description"] ?? "");
+    $project["scope_summary"] = trim($_POST["scope_summary"] ?? "");
+    $project["outcome_summary"] = trim($_POST["outcome_summary"] ?? "");
     $project["project_status"] = $_POST["project_status"] ?? "Planned";
     $project["start_date"] = trim($_POST["start_date"] ?? "");
     $project["completion_date"] = trim($_POST["completion_date"] ?? "");
     $image = $_FILES["image"] ?? null;
     $media = $_FILES["media"] ?? [];
     $remove_image = isset($_POST["remove_image"]);
+    $publish_requested = ($_POST["publish"] ?? "") === "1";
+    $confirmed_facts = ($_POST["confirm_facts"] ?? "") === "1";
 
     if (!in_array($project["project_status"], $allowed_statuses, true)) {
         $project["project_status"] = "Planned";
@@ -55,8 +64,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $error = "Your session token has expired. Refresh the page and try again.";
     } elseif ($project["project_name"] === "") {
         $error = "Project name is required.";
-    } elseif ($project["location"] === "") {
-        $error = "Project location is required.";
+    } elseif ($project["location"] === "" || mb_strlen($project["project_name"]) > 255 || mb_strlen($project["location"]) > 255) {
+        $error = "Enter a project name and location within the 255-character limit.";
+    } elseif (mb_strlen($project["description"]) > 5000 || mb_strlen($project["scope_summary"]) > 5000 || mb_strlen($project["outcome_summary"]) > 5000) {
+        $error = "Project summary, scope, and outcomes must each be 5,000 characters or fewer.";
     } elseif ($image && $image["error"] !== UPLOAD_ERR_NO_FILE && $image["error"] !== UPLOAD_ERR_OK) {
         $error = "The project image could not be uploaded.";
     } elseif ($image && $image["error"] === UPLOAD_ERR_OK && $image["size"] > 5 * 1024 * 1024) {
@@ -88,21 +99,43 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $new_image = "";
         }
 
+        if ($new_image === "") {
+            foreach ($uploaded_media as $media_item) {
+                if ($media_item["type"] === "image") {
+                    $new_image = $media_item["path"];
+                    break;
+                }
+            }
+        }
+        if ($publish_requested && (
+            !$confirmed_facts
+            || $project["description"] === ""
+            || $project["scope_summary"] === ""
+            || $project["outcome_summary"] === ""
+            || !project_cover_image_exists($new_image)
+        )) {
+            $error = "To publish now, confirm the facts and provide a factual summary, verified scope and outcome, and a valid cover photo.";
+        }
+
         if ($error === "") {
             $start_date = $project["start_date"] !== "" ? $project["start_date"] : null;
             $completion_date = $project["completion_date"] !== "" ? $project["completion_date"] : null;
-            $update_stmt = $conn->prepare("UPDATE projects SET project_name = ?, location = ?, description = ?, project_status = ?, start_date = ?, completion_date = ?, image = ?, is_published = 0 WHERE id = ?");
+            $published = $publish_requested ? 1 : 0;
+            $update_stmt = $conn->prepare("UPDATE projects SET project_name = ?, location = ?, description = ?, scope_summary = ?, outcome_summary = ?, project_status = ?, start_date = ?, completion_date = ?, image = ?, is_published = ? WHERE id = ?");
 
             if ($update_stmt) {
                 $update_stmt->bind_param(
-                    "sssssssi",
+                    "sssssssssii",
                     $project["project_name"],
                     $project["location"],
                     $project["description"],
+                    $project["scope_summary"],
+                    $project["outcome_summary"],
                     $project["project_status"],
                     $start_date,
                     $completion_date,
                     $new_image,
+                    $published,
                     $project_id
                 );
 
@@ -118,9 +151,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     if ($old_image !== $new_image && str_starts_with($old_image, "uploads/projects/")) {
                         @unlink(dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . $old_image);
                     }
+                    $auditFailed = false;
+                    try {
+                        recordAdminAudit($conn, $publish_requested ? "publish_project" : "update_project_draft", "project", (int) $project_id);
+                    } catch (RuntimeException $exception) {
+                        error_log($exception->getMessage());
+                        $auditFailed = true;
+                    }
                     $update_stmt->close();
                     $conn->close();
-                    header("Location: ../../projects.php?project=updated");
+                    header("Location: ../../projects.php?project=" . ($publish_requested ? "published" : "updated") . ($auditFailed ? "&audit=failed" : ""));
                     exit;
                 }
 
@@ -161,20 +201,7 @@ $conn->close();
 </head>
 <body>
     <div class="admin-shell">
-        <aside class="admin-sidebar">
-            <a class="sidebar-brand" href="../dashboard.php">
-                <img src="../../logo/E&R Logo.jfif" alt="E&R Real Estate and Construction Limited logo">
-                <span><strong>E&amp;R</strong><span>Administration</span></span>
-            </a>
-            <p class="workspace-label">Workspace</p>
-            <nav class="sidebar-nav" aria-label="Administration navigation">
-                <a class="sidebar-link" href="../dashboard.php"><i class="fas fa-chart-pie" aria-hidden="true"></i> Dashboard</a>
-                <a class="sidebar-link" href="add-project.php"><i class="fas fa-plus" aria-hidden="true"></i> Add project</a>
-                <a class="sidebar-link active" href="../../projects.php" aria-current="page"><i class="fas fa-building" aria-hidden="true"></i> Projects</a>
-                <a class="sidebar-link" href="../../constructions.html"><i class="fas fa-globe" aria-hidden="true"></i> Public website</a>
-            </nav>
-            <div class="sidebar-bottom"><a class="sidebar-link sidebar-signout" href="../logout.php"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign out</a></div>
-        </aside>
+        <?php renderAdminSidebar("projects", "projects"); ?>
 
         <main class="admin-main">
             <header class="admin-header">
@@ -196,6 +223,8 @@ $conn->close();
                             <label>Project name<input type="text" name="project_name" value="<?= htmlspecialchars($project["project_name"], ENT_QUOTES, "UTF-8") ?>" required></label>
                             <label>Location<input type="text" name="location" value="<?= htmlspecialchars($project["location"], ENT_QUOTES, "UTF-8") ?>" required></label>
                             <label class="full-width">Project summary<small>Use confirmed scope and outcomes only. Leave unverified details blank.</small><textarea name="description" rows="6"><?= htmlspecialchars($project["description"], ENT_QUOTES, "UTF-8") ?></textarea></label>
+                            <label class="full-width">Verified scope of work<small>Use facts confirmed by the company or project owner.</small><textarea name="scope_summary" maxlength="5000" rows="4"><?= htmlspecialchars($project["scope_summary"] ?? "", ENT_QUOTES, "UTF-8") ?></textarea></label>
+                            <label class="full-width">Verified outcomes<small>Leave blank rather than presenting unverified results as fact.</small><textarea name="outcome_summary" maxlength="5000" rows="4"><?= htmlspecialchars($project["outcome_summary"] ?? "", ENT_QUOTES, "UTF-8") ?></textarea></label>
                             <label>Project status<select name="project_status"><?php foreach ($allowed_statuses as $status): ?><option value="<?= htmlspecialchars($status, ENT_QUOTES, "UTF-8") ?>" <?= $project["project_status"] === $status ? "selected" : "" ?>><?= htmlspecialchars($status, ENT_QUOTES, "UTF-8") ?></option><?php endforeach; ?></select></label>
                             <label>Start date<input type="date" name="start_date" value="<?= htmlspecialchars($project["start_date"] ?? "", ENT_QUOTES, "UTF-8") ?>"></label>
                             <label>Completion date<input type="date" name="completion_date" value="<?= htmlspecialchars($project["completion_date"] ?? "", ENT_QUOTES, "UTF-8") ?>"></label>
@@ -212,7 +241,17 @@ $conn->close();
                                 <small class="text-muted">Images up to 5 MB each; videos up to 50 MB each.</small>
                             </div>
 
-                            <div class="settings-actions"><span>Leave the image empty to keep the current one.</span><button class="button button-primary" type="submit"><i class="fas fa-save" aria-hidden="true"></i> Save changes</button></div>
+                            <div class="full-width">
+                                <label class="remember-option"><input type="checkbox" name="confirm_facts" value="1"> I confirm the details, scope, and outcomes are verified and approved for public display.</label>
+                                <small class="text-muted">Saving edits keeps this as a draft. Saving and publishing requires confirmed factual details and a valid cover photo.</small>
+                            </div>
+                            <div class="settings-actions">
+                                <span>Leave the image empty to keep the current one.</span>
+                                <div class="d-flex flex-wrap" style="gap: 10px;">
+                                    <button class="button button-quiet" type="submit"><i class="fas fa-save" aria-hidden="true"></i> Save as draft</button>
+                                    <button class="button button-primary" type="submit" name="publish" value="1"><i class="fas fa-globe" aria-hidden="true"></i> Save and publish</button>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </section>
@@ -220,6 +259,7 @@ $conn->close();
         </main>
     </div>
     <script src="../../js/admin-image-optimizer.js"></script>
+    <script src="../../js/admin-shell.js" defer></script>
     <script>
         const imageInput = document.getElementById("image");
         const imagePreview = document.getElementById("imagePreview");

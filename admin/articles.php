@@ -1,7 +1,10 @@
 <?php
 require_once __DIR__ . "/../includes/auth.php";
+requireAdminPermission("articles");
 require_once __DIR__ . "/../includes/admin-form.php";
 require_once __DIR__ . "/../config/db.php";
+require_once __DIR__ . "/../includes/admin-ui.php";
+require_once __DIR__ . "/../includes/admin-audit.php";
 
 $token = adminFormToken();
 $error = "";
@@ -39,6 +42,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $statement->bind_param("i", $id);
             if ($statement->execute()) {
                 $notice = "Article published.";
+                try {
+                    recordAdminAudit($conn, "publish_article", "article", (int) $id);
+                } catch (RuntimeException $exception) {
+                    error_log($exception->getMessage());
+                    $error = "The article was published, but its audit event could not be recorded. Check server logs.";
+                }
             } else {
                 $error = "The article could not be published.";
             }
@@ -49,6 +58,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $statement->bind_param("i", $id);
         if ($statement->execute()) {
             $notice = "Article withdrawn from the public site.";
+            try {
+                recordAdminAudit($conn, "withdraw_article", "article", (int) $id);
+            } catch (RuntimeException $exception) {
+                error_log($exception->getMessage());
+                $error = "The article was withdrawn, but its audit event could not be recorded. Check server logs.";
+            }
         } else {
             $error = "The article could not be withdrawn.";
         }
@@ -123,6 +138,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             if ($statement->execute()) {
                 $notice = "Article saved as an unpublished draft. Review and publish it when ready.";
+                $savedId = $editId ?: (int) $conn->insert_id;
+                try {
+                    recordAdminAudit($conn, $editId ? "update_article_draft" : "create_article_draft", "article", $savedId);
+                } catch (RuntimeException $exception) {
+                    error_log($exception->getMessage());
+                    $error = "The draft was saved, but its audit event could not be recorded. Check server logs.";
+                }
                 $editId = 0;
                 $formArticle = ["title" => "", "category" => "", "summary" => "", "content" => "", "image" => ""];
             } else {
@@ -150,23 +172,12 @@ $adminName = $_SESSION["admin_name"] ?? "Administrator";
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Editorial CMS | E&amp;R Administration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css">
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body>
 <div class="admin-shell">
-    <aside class="admin-sidebar">
-        <a class="sidebar-brand" href="dashboard.php"><img src="../logo/E&R Logo.jfif" alt=""><span><strong>E&amp;R</strong><span>Administration</span></span></a>
-        <p class="workspace-label">Workspace</p>
-        <nav class="sidebar-nav" aria-label="Administration navigation">
-            <a class="sidebar-link" href="dashboard.php">Dashboard</a>
-            <a class="sidebar-link" href="../projects.php">Projects</a>
-            <a class="sidebar-link" href="content-review.php">Content review</a>
-            <a class="sidebar-link" href="articles.php">Editorial CMS</a>
-            <a class="sidebar-link" href="enquiries.php">Enquiries</a>
-            <a class="sidebar-link" href="settings.php">Site settings</a>
-        </nav>
-        <div class="sidebar-bottom"><a class="sidebar-link sidebar-signout" href="logout.php">Sign out</a></div>
-    </aside>
+    <?php renderAdminSidebar("articles"); ?>
     <main class="admin-main">
         <header class="admin-header"><div class="breadcrumbs"><span>Workspace</span><strong>Editorial CMS</strong></div><div class="user-chip"><strong><?= htmlspecialchars($adminName, ENT_QUOTES, "UTF-8") ?></strong></div></header>
         <section class="admin-content">
@@ -212,5 +223,6 @@ $adminName = $_SESSION["admin_name"] ?? "Administrator";
     </main>
 </div>
 <script src="../js/admin-image-optimizer.js"></script>
+<script src="../js/admin-shell.js" defer></script>
 </body>
 </html>

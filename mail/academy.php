@@ -4,8 +4,8 @@ declare(strict_types=1);
 try {
     require_once __DIR__ . '/../config/db.php';
     require_once __DIR__ . '/../includes/site-settings.php';
+    require_once __DIR__ . '/../includes/site-mail.php';
     $notificationEmail = loadSiteSettings($conn)['public_email'];
-    $conn->close();
 } catch (Throwable $exception) {
     error_log('Academy notification settings error: ' . $exception->getMessage());
     http_response_code(500);
@@ -89,18 +89,44 @@ if (
 }
 
 $fullName = $firstName . ' ' . $surname;
-$body = "New course enquiry from the website.\n\nName: {$fullName}\nEmail: {$email}\nPhone: {$phone}\nProgramme: {$courses[$course]}\n\nLearning goals:\n{$message}\n";
-$headers = [
-    'From: E&R Website <website@errealestate.co.ke>',
-    "Reply-To: {$email}",
-    'MIME-Version: 1.0',
-    'Content-Type: text/plain; charset=UTF-8',
-];
-
-if (!mail($notificationEmail, "Academy enquiry: {$courses[$course]} - {$fullName}", $body, implode("\r\n", $headers))) {
-    error_log('Academy enquiry email could not be sent.');
-    academyRespond(500, 'The enquiry could not be sent.');
+$statement = $conn->prepare(
+    "INSERT INTO academy_enquiries (full_name, email, phone, course, message)
+     VALUES (?, ?, ?, ?, ?)"
+);
+if (!$statement) {
+    error_log('Academy enquiry storage could not be prepared: ' . $conn->error);
+    $conn->close();
+    academyRespond(500, 'The enquiry could not be saved. Please try again later.');
 }
+$statement->bind_param('sssss', $fullName, $email, $phone, $course, $message);
+if (!$statement->execute()) {
+    error_log('Academy enquiry storage failed: ' . $statement->error);
+    $statement->close();
+    $conn->close();
+    academyRespond(500, 'The enquiry could not be saved. Please try again later.');
+}
+$enquiryId = (int) $conn->insert_id;
+$statement->close();
+
+$body = "New course enquiry from the website.\n\nName: {$fullName}\nEmail: {$email}\nPhone: {$phone}\nProgramme: {$courses[$course]}\n\nLearning goals:\n{$message}\n";
+$sent = sendSiteNotification(
+    $notificationEmail,
+    "Academy enquiry: {$courses[$course]} - {$fullName}",
+    $body,
+    $email
+);
+$status = $sent ? 'sent' : 'failed';
+$update = $conn->prepare("UPDATE academy_enquiries SET notification_status = ? WHERE id = ?");
+if ($update) {
+    $update->bind_param('si', $status, $enquiryId);
+    if (!$update->execute()) {
+        error_log('Academy notification status could not be updated: ' . $update->error);
+    }
+    $update->close();
+} else {
+    error_log('Academy notification status update could not be prepared: ' . $conn->error);
+}
+$conn->close();
 
 header('Content-Type: application/json; charset=utf-8');
-echo json_encode(['message' => 'Enquiry sent.'], JSON_THROW_ON_ERROR);
+echo json_encode(['message' => 'Your enquiry has been received and saved. Our team will follow up.'], JSON_THROW_ON_ERROR);

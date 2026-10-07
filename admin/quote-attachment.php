@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../includes/auth.php";
+requireAdminPermission("enquiries");
 require_once __DIR__ . "/../config/db.php";
 
 $quoteId = filter_input(INPUT_GET, "id", FILTER_VALIDATE_INT);

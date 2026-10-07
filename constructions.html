@@ -22,18 +22,55 @@
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style.css?v=20261007-site-audit" rel="stylesheet">
     <style>
-        .public-project-media { position: relative; height: 240px; overflow: hidden; background: #e8efea; }
+        .projects-hero { position: relative; min-height: 510px; display: flex; align-items: center; overflow: hidden; color: #fff; background: linear-gradient(90deg, rgba(9, 35, 30, .94) 0%, rgba(9, 35, 30, .78) 48%, rgba(9, 35, 30, .22) 100%), url("img/5825572544151490514.jpg") center 48% / cover; }
+        .projects-hero-content { width: min(100% - 36px, 1180px); margin: 0 auto; padding: 86px 0; }
+        .projects-hero-copy { max-width: 720px; }
+        .projects-hero-kicker, .project-art-note { display: inline-flex; align-items: center; gap: 8px; padding: 8px 13px; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; background: rgba(255,255,255,.09); color: #f1d59e; font-size: .74rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
+        .projects-hero h1 { margin: 22px 0 18px; color: #fff; font-size: clamp(2.4rem, 6vw, 4.8rem); font-weight: 800; letter-spacing: -.045em; line-height: 1.04; }
+        .projects-hero p { max-width: 590px; color: rgba(255,255,255,.8); font-size: clamp(1rem, 1.7vw, 1.18rem); line-height: 1.75; }
+        .projects-hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+        .projects-hero .btn { border-radius: 7px; padding: 13px 20px; font-weight: 700; }
+        .projects-hero-note { display: block; margin-top: 18px; color: rgba(255,255,255,.62); font-size: .79rem; }
+        .portfolio-section { max-width: 1240px; }
+        .portfolio-heading { max-width: 710px; margin: 0 auto 34px; text-align: center; }
+        .portfolio-heading .portfolio-kicker { color: #9d7840; font-size: .75rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+        .portfolio-heading h2 { margin: 12px 0; color: #183d34; font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -.035em; }
+        .portfolio-heading p { color: #6f7c76; line-height: 1.75; }
+        .portfolio-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin: 0 0 22px; }
+        .portfolio-count { margin: 0; color: #6f7c76; font-size: .9rem; }
+        .portfolio-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+        .portfolio-filter { padding: 8px 13px; border: 1px solid #dbe3dd; border-radius: 999px; background: #fff; color: #425a50; font-size: .82rem; font-weight: 700; transition: .2s ease; }
+        .portfolio-filter:hover, .portfolio-filter.active { border-color: #17483d; background: #17483d; color: #fff; }
+        .portfolio-grid { row-gap: 8px; }
+        .portfolio-card { height: 100%; overflow: hidden; border: 1px solid #e7ece8; border-radius: 12px; background: #fff; box-shadow: 0 12px 34px rgba(20,53,44,.07); transition: transform .22s ease, box-shadow .22s ease; }
+        .portfolio-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(20,53,44,.13); }
+        .public-project-media { position: relative; height: 245px; overflow: hidden; background: #e8efea; }
+        .public-project-media[data-test-record="true"]::after { position: absolute; z-index: 3; right: 12px; bottom: 12px; padding: 7px 10px; border-radius: 5px; background: #fff3cd; color: #765b12; content: "TEST ONLY - NOT REAL E&R WORK"; font-size: .68rem; font-weight: 800; letter-spacing: .04em; }
         .public-project-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .55s ease; pointer-events: none; }
         .public-project-slide.active { opacity: 1; pointer-events: auto; }
         .public-project-slide video { width: 100%; height: 100%; object-fit: cover; }
-        .public-project-media-control { position: absolute; z-index: 2; top: 50%; width: 34px; height: 34px; border: 0; border-radius: 50%; color: #fff; background: rgba(18, 61, 52, .82); transform: translateY(-50%); }
+        .public-project-media-control { position: absolute; z-index: 2; top: 50%; width: 38px; height: 38px; border: 0; border-radius: 50%; color: #fff; background: rgba(18, 61, 52, .86); transform: translateY(-50%); }
         .public-project-media-control.prev { left: 12px; }.public-project-media-control.next { right: 12px; }
         .public-project-dots { position: absolute; z-index: 2; right: 0; bottom: 12px; left: 0; display: flex; justify-content: center; gap: 6px; }
         .public-project-dot { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,.7); }
         .public-project-dot.active { background: #c9a35b; }
-        @media (max-width: 575px) { .public-project-media { height: 220px; } }
+        .project-card-body { padding: 22px; }
+        .project-status-pill { display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 999px; background: #edf3ef; color: #285849; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+        .project-test-pill { display: inline-flex; align-items: center; margin: 0 0 0 6px; padding: 6px 10px; border-radius: 999px; background: #fff3cd; color: #765b12; font-size: .68rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+        .project-card-body h3 { margin: 13px 0 8px; color: #183d34; font-size: 1.25rem; font-weight: 800; line-height: 1.3; }
+        .project-card-location, .project-card-date { color: #76817c; font-size: .84rem; }
+        .project-card-summary { margin: 14px 0 0; color: #576761; font-size: .92rem; line-height: 1.65; }
+        .project-card-proof { margin-top: 14px; padding-top: 13px; border-top: 1px solid #edf0ed; color: #425a50; font-size: .84rem; line-height: 1.6; }
+        .project-card-proof p { margin: 0 0 7px; }
+        .project-card-links { display: flex; flex-wrap: wrap; gap: 12px 18px; margin-top: 18px; }
+        .project-card-links a { color: #1a5545; font-size: .84rem; font-weight: 800; }
+        .project-card-links a:hover { color: #986f30; }
+        .portfolio-empty { padding: 44px 20px; border: 1px dashed #ccd8d0; border-radius: 12px; background: #f8faf8; }
+        .portfolio-empty h3 { color: #183d34; font-weight: 800; }
+        @media (max-width: 575px) { .projects-hero { min-height: 430px; background-position: 58% center; }.projects-hero-content { padding: 64px 0; }.projects-hero-actions .btn { flex: 1 1 100%; }.public-project-media { height: 220px; }.project-card-body { padding: 19px; } }
+        @media (prefers-reduced-motion: reduce) { .portfolio-card, .public-project-slide, .portfolio-filter { transition: none; } }
     </style>
 
 
@@ -52,13 +89,13 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav ml-auto py-0">
-                        <a href="index.html" class="nav-item nav-link active">Home</a>
+                        <a href="index.html" class="nav-item nav-link">Home</a>
                         <a href="about.html" class="nav-item nav-link">About</a>
                         <a href="service.html" class="nav-item nav-link">Services</a>
-                        <a href="constructions.html" class="nav-item nav-link active">Projects</a>
+                        <a href="constructions.html" class="nav-item nav-link active" aria-current="page">Projects</a>
                         <a href="real-estate.html" class="nav-item nav-link">Properties</a>
                         <a href="quote.php" class="nav-item nav-link">Get a Quote</a>
-                        <a href="contact.html" class="nav-item nav-link">Contact</a>
+                        <a href="contact.php" class="nav-item nav-link">Contact</a>
                     </div>
                 </div>
             </nav>
@@ -66,69 +103,38 @@
     </div>
     <!-- Navbar End -->
 
-    <!-- Carousel Start -->
-    <div class="container-fluid p-0 mb-5">
-        <div id="header-carousel" class="carousel slide carousel-fade" data-ride="carousel">
-            <ol class="carousel-indicators">
-                <li data-target="#header-carousel" data-slide-to="0" class="active"></li>
-                <li data-target="#header-carousel" data-slide-to="1"></li>
-                <li data-target="#header-carousel" data-slide-to="2"></li>
-            </ol>
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img class="img-fluid" src="img/5825572544151490514.jpg" alt="Coastal residential development"
-                        fetchpriority="high">
-                    <div class="carousel-caption d-flex align-items-center justify-content-center">
-                        <div class="p-5" style="width: 100%; max-width: 900px;">
-                            <h5 class="text-white text-uppercase mb-md-3">Construction Company</h5>
-                            <h1 class="display-3 text-white mb-md-4">E&R REAL ESTATE AND CONSTRUCTION LIMITED</h1>
-                            <a href="about.html"
-                                class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold mt-2">Learn More</a>
-                            <a href="#projects" class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold mt-2">View
-                                Projects</a>
-                        </div>
-                    </div>
+    <header class="projects-hero">
+        <div class="projects-hero-content">
+            <div class="projects-hero-copy">
+                <span class="projects-hero-kicker"><i class="fas fa-hard-hat" aria-hidden="true"></i> E&amp;R project portfolio</span>
+                <h1>Work built on care, craft and clear detail.</h1>
+                <p>Explore project records shared by our team. Each listing shows the information currently recorded; verified scope, outcomes and media are included where available.</p>
+                <div class="projects-hero-actions">
+                    <a href="#projects" class="btn btn-primary">Explore projects <i class="fas fa-arrow-down ml-2" aria-hidden="true"></i></a>
+                    <a href="quote.php" class="btn btn-outline-light">Plan a project <i class="fas fa-arrow-right ml-2" aria-hidden="true"></i></a>
                 </div>
-                <div class="carousel-item">
-                    <img class="img-fluid" src="img/5825572544151490515.jpg" alt="Coastal residence at sunset"
-                        loading="lazy" decoding="async">
-                    <div class="carousel-caption d-flex align-items-center justify-content-center">
-                        <div class="p-5" style="width: 100%; max-width: 900px;">
-                            <h5 class="text-white text-uppercase mb-md-3">Construction Company</h5>
-                            <h1 class="display-3 text-white mb-md-4">Company's Projects</h1>
-                            <a href="contact.html"
-                                class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold mt-2">Start a Project</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <img class="img-fluid" src="img/5825572544151490516.jpg" alt="Modern residential architecture"
-                        loading="lazy" decoding="async">
-                    <div class="carousel-caption d-flex align-items-center justify-content-center">
-                        <div class="p-5" style="width: 100%; max-width: 900px;">
-                            <h5 class="text-white text-uppercase mb-md-3">Construction Company</h5>
-                            <h1 class="display-3 text-white mb-md-4">A selection of project work</h1>
-                            <a href="contact.html"
-                                class="btn btn-primary py-md-2 px-md-4 font-weight-semi-bold mt-2">Request a Quote</a>
-                        </div>
-                    </div>
-                </div>
+                <small class="projects-hero-note"><i class="fas fa-image mr-1" aria-hidden="true"></i> Hero image is an architectural visualization.</small>
             </div>
         </div>
-    </div>
-    <!-- Carousel End -->
+    </header>
 
-    <section class="container py-5" id="projects">
-        <div class="row justify-content-center mb-5">
-            <div class="col-lg-7 text-center">
-                <small class="bg-primary text-white text-uppercase font-weight-bold px-1">Our Work</small>
-                <h1 class="mt-2 mb-3">Project portfolio</h1>
-                <p class="text-muted">Explore project records shared by our team. Descriptions, locations, status, and
-                    dates reflect the information currently available; project outcomes are not assumed.</p>
+    <section class="container portfolio-section py-5" id="projects">
+        <div class="portfolio-heading">
+            <span class="portfolio-kicker">Selected work</span>
+            <h2>Projects, with the details that matter</h2>
+            <p>Browse current project records by status. Open a project for its full description, gallery, dates and confirmed scope or outcomes.</p>
+        </div>
+        <div class="portfolio-toolbar">
+            <p class="portfolio-count" id="projectCount" aria-live="polite">Loading published projects…</p>
+            <div class="portfolio-filters" role="group" aria-label="Filter projects by status">
+                <button class="portfolio-filter active" type="button" data-project-filter="all" aria-pressed="true">All projects</button>
+                <button class="portfolio-filter" type="button" data-project-filter="Ongoing" aria-pressed="false">Ongoing</button>
+                <button class="portfolio-filter" type="button" data-project-filter="Completed" aria-pressed="false">Completed</button>
+                <button class="portfolio-filter" type="button" data-project-filter="Planned" aria-pressed="false">Planned</button>
             </div>
         </div>
-        <div class="row" id="projectGrid" aria-live="polite">
-            <div class="col-12 text-center py-4" role="status">Loading project records...</div>
+        <div class="row portfolio-grid" id="projectGrid" aria-live="polite" aria-busy="true">
+            <div class="col-12 text-center py-4" role="status">Loading project records…</div>
         </div>
     </section>
 
@@ -144,12 +150,8 @@
                 <p>To Our Esteemed Clients,You Can Follow E&R REAL ESTATE AND CONSTRUCTION LIMITED On Social Media
                     Platforms</p>
                 <div class="d-flex justify-content-start mt-4">
-                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;" href="contact.html" aria-label="Contact E&R on Facebook"><i
-                            class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;" href="contact.html" aria-label="Contact E&R on LinkedIn"><i
-                            class="fab fa-linkedin-in"></i></a>
+
+
                     <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
                         style="width: 38px; height: 38px;"
                         href="https://www.instagram.com/e_r_real_estate_construction/"><i
@@ -186,7 +188,7 @@
                             class="fa fa-angle-right text-primary mr-2"></i>Services</a>
                     <a class="text-white mb-2" href="real-estate.html"><i
                             class="fa fa-angle-right text-primary mr-2"></i>Properties</a>
-                    <a class="text-white" href="contact.html"><i class="fa fa-angle-right text-primary mr-2"></i>Contact
+                    <a class="text-white" href="contact.php"><i class="fa fa-angle-right text-primary mr-2"></i>Contact
                         Us</a>
                 </div>
             </div>
@@ -203,8 +205,7 @@
     </div>
     <div class="container-fluid py-4 px-sm-3 px-md-5">
         <p class="m-0 text-center">
-            &copy;2026 <a class="font-weight-semi-bold" href="#">E&R REAL ESTATE AND CONSTRUCTION LIMITED</a>. Terms &
-            Conditions. All Rights Reserved.
+            &copy;2026 <a class="font-weight-semi-bold" href="index.html">E&R REAL ESTATE AND CONSTRUCTION LIMITED</a>. <a href="privacy.html">Privacy notice</a>. All rights reserved.
         </p>
     </div>
     <!-- Footer End -->
@@ -223,14 +224,16 @@
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script src="js/main.js?v=20261007-site-audit"></script>
     <script src="js/site-settings.js" defer></script>
     <script>
         const projectGrid = document.getElementById("projectGrid");
+        const projectCount = document.getElementById("projectCount");
+        const projectFilters = [...document.querySelectorAll("[data-project-filter]")];
+        let projects = [];
+        let selectedStatus = "all";
 
         const escapeHtml = (value) => String(value || "")
             .replace(/&/g, "&amp;")
@@ -248,72 +251,106 @@
                 : `<img class="public-project-slide ${index === 0 ? "active" : ""}" src="${escapeHtml(item.path)}" alt="${escapeHtml(project.project_name)} project image ${index + 1}" loading="lazy" decoding="async">`).join("")
                 : `<div class="public-project-slide active d-flex align-items-center justify-content-center bg-light"><i class="fa fa-building fa-3x text-primary" aria-hidden="true"></i></div>`;
             const controls = media.length > 1 ? `<button class="public-project-media-control prev" type="button" data-project-prev aria-label="Previous project media"><i class="fa fa-chevron-left"></i></button><button class="public-project-media-control next" type="button" data-project-next aria-label="Next project media"><i class="fa fa-chevron-right"></i></button><div class="public-project-dots">${media.map((item, index) => `<button class="public-project-dot ${index === 0 ? "active" : ""}" type="button" data-project-dot="${index}" aria-label="Show media ${index + 1}"></button>`).join("")}</div>` : "";
-            return `<div class="public-project-media" data-project-carousel>${slides}${controls}</div>`;
+            return `<div class="public-project-media" data-project-carousel data-test-record="${project.is_test ? "true" : "false"}">${slides}${controls}</div>`;
         };
 
         const projectCard = (project) => {
-            const description = project.description || "Project description not provided.";
+            const description = project.description || "";
+            const scope = project.scope_summary || "";
+            const outcome = project.outcome_summary || "";
             const status = project.project_status || "Status not provided";
+            const testBadge = project.is_test
+                ? '<span class="project-test-pill">Test only - not real work</span>'
+                : "";
             const dates = [project.start_date, project.completion_date].filter(Boolean);
             const dateLabel = dates.length
-                ? `<p class="small text-muted mb-2">${dates.map(escapeHtml).join(" – ")}</p>`
+                ? `<p class="small text-muted mb-2">${dates.map(escapeHtml).join(" &ndash; ")}</p>`
                 : "";
 
-            return `<div class="col-md-6 col-lg-4 mb-4">
-                <article class="border h-100 bg-white">
+            return `<div class="col-sm-6 col-lg-4 mb-4">
+                <article class="portfolio-card" data-project-status="${escapeHtml(status)}">
                     ${projectMedia(project)}
-                    <div class="p-4">
-                        <small class="text-primary font-weight-bold text-uppercase">${escapeHtml(status)}</small>
-                        <h4 class="mt-2">${escapeHtml(project.project_name)}</h4>
-                        <p class="text-muted mb-2"><i class="fa fa-map-marker-alt text-primary mr-2" aria-hidden="true"></i>${escapeHtml(project.location)}</p>
-                        ${dateLabel}
-                        <p>${escapeHtml(description)}</p>
-                        <a class="font-weight-semi-bold mr-3" href="project-details.php?id=${Number(project.id)}">View project details <i class="fa fa-angle-double-right"></i></a>
-                        <a class="font-weight-semi-bold" href="quote.php">Discuss a similar project <i class="fa fa-angle-double-right"></i></a>
+                    <div class="project-card-body">
+                        <span class="project-status-pill">${escapeHtml(status)}</span>${testBadge}
+                        <h3>${escapeHtml(project.project_name)}</h3>
+                        <p class="project-card-location mb-1"><i class="fa fa-map-marker-alt text-primary mr-2" aria-hidden="true"></i>${escapeHtml(project.location || "Location not provided")}</p>
+                        ${dateLabel ? `<div class="project-card-date">${dateLabel}</div>` : ""}
+                        ${description ? `<p class="project-card-summary">${escapeHtml(description)}</p>` : ""}
+                        ${scope || outcome ? `<div class="project-card-proof">${scope ? `<p><strong>Scope:</strong> ${escapeHtml(scope)}</p>` : ""}${outcome ? `<p><strong>Outcome:</strong> ${escapeHtml(outcome)}</p>` : ""}</div>` : ""}
+                        <div class="project-card-links">
+                            <a href="project-details.php?id=${Number(project.id)}">Project details <i class="fa fa-arrow-right ml-1" aria-hidden="true"></i></a>
+                            <a href="quote.php">Discuss your project</a>
+                        </div>
                     </div>
                 </article>
             </div>`;
         };
+
+        const renderProjects = () => {
+            const visible = selectedStatus === "all"
+                ? projects
+                : projects.filter(project => project.project_status === selectedStatus);
+            projectCount.textContent = `${visible.length} ${visible.length === 1 ? "project" : "projects"}${selectedStatus === "all" ? "" : ` · ${selectedStatus}`}`;
+            projectGrid.setAttribute("aria-busy", "false");
+            projectGrid.innerHTML = visible.length
+                ? visible.map(projectCard).join("")
+                : '<div class="col-12"><div class="portfolio-empty text-center"><h3>No projects in this category yet</h3><p class="text-muted mb-3">Choose another status or contact our team to discuss a new project.</p><a class="btn btn-primary" href="contact.php">Contact E&amp;R</a></div></div>';
+
+            document.querySelectorAll("[data-project-carousel]").forEach((carousel) => {
+                const slides = [...carousel.querySelectorAll(".public-project-slide")];
+                const dots = [...carousel.querySelectorAll(".public-project-dot")];
+                if (slides.length < 2) return;
+                let current = 0;
+                const showSlide = (index) => {
+                    current = (index + slides.length) % slides.length;
+                    slides.forEach((slide, slideIndex) => {
+                        slide.classList.toggle("active", slideIndex === current);
+                        if (slide.tagName === "VIDEO") {
+                            slide.pause();
+                            if (slideIndex === current) slide.play().catch(() => {});
+                        }
+                    });
+                    dots.forEach((dot, dotIndex) => dot.classList.toggle("active", dotIndex === current));
+                };
+                carousel.querySelector("[data-project-prev]").addEventListener("click", () => showSlide(current - 1));
+                carousel.querySelector("[data-project-next]").addEventListener("click", () => showSlide(current + 1));
+                dots.forEach((dot) => dot.addEventListener("click", () => showSlide(Number(dot.dataset.projectDot))));
+                showSlide(0);
+                setInterval(() => showSlide(current + 1), 5000);
+            });
+        };
+
+        projectFilters.forEach(button => button.addEventListener("click", () => {
+            selectedStatus = button.dataset.projectFilter;
+            projectFilters.forEach(filter => {
+                const active = filter === button;
+                filter.classList.toggle("active", active);
+                filter.setAttribute("aria-pressed", String(active));
+            });
+            renderProjects();
+        }));
 
         fetch("projects-feed.php")
             .then((response) => {
                 if (!response.ok) throw new Error("Projects could not be loaded.");
                 return response.json();
             })
-            .then((projects) => {
-                if (!Array.isArray(projects)) throw new Error("Project data is unavailable.");
+            .then((loadedProjects) => {
+                if (!Array.isArray(loadedProjects)) throw new Error("Project data is unavailable.");
+                projects = loadedProjects;
                 if (!projects.length) {
-                    projectGrid.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">There are no published project records yet.</p><a class="btn btn-primary" href="quote.php">Discuss your project</a></div>';
+                    projectCount.textContent = "No published projects yet";
+                    projectGrid.setAttribute("aria-busy", "false");
+                    projectGrid.innerHTML = '<div class="col-12"><div class="portfolio-empty text-center"><h3>Project stories are on the way</h3><p class="text-muted mb-3">Contact our team to discuss a construction project or property enquiry.</p><a class="btn btn-primary mr-2" href="quote.php">Request a quote</a><a class="btn btn-outline-primary" href="contact.php">Contact E&amp;R</a></div></div>';
                     return;
                 }
-
-                projectGrid.innerHTML = projects.map(projectCard).join("");
-                document.querySelectorAll("[data-project-carousel]").forEach((carousel) => {
-                    const slides = [...carousel.querySelectorAll(".public-project-slide")];
-                    const dots = [...carousel.querySelectorAll(".public-project-dot")];
-                    if (slides.length < 2) return;
-                    let current = 0;
-                    const showSlide = (index) => {
-                        current = (index + slides.length) % slides.length;
-                        slides.forEach((slide, slideIndex) => {
-                            slide.classList.toggle("active", slideIndex === current);
-                            if (slide.tagName === "VIDEO") {
-                                slide.pause();
-                                if (slideIndex === current) slide.play().catch(() => {});
-                            }
-                        });
-                        dots.forEach((dot, dotIndex) => dot.classList.toggle("active", dotIndex === current));
-                    };
-                    carousel.querySelector("[data-project-prev]").addEventListener("click", () => showSlide(current - 1));
-                    carousel.querySelector("[data-project-next]").addEventListener("click", () => showSlide(current + 1));
-                    dots.forEach((dot) => dot.addEventListener("click", () => showSlide(Number(dot.dataset.projectDot))));
-                    showSlide(0);
-                    setInterval(() => showSlide(current + 1), 5000);
-                });
+                renderProjects();
             })
             .catch((error) => {
                 console.error("Unable to load project records.", error);
-                projectGrid.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Project records are temporarily unavailable. Please try again later or contact our team.</p><a class="btn btn-primary" href="contact.html">Contact E&amp;R</a></div>';
+                projectCount.textContent = "Project records unavailable";
+                projectGrid.setAttribute("aria-busy", "false");
+                projectGrid.innerHTML = '<div class="col-12"><div class="portfolio-empty text-center" role="alert"><h3>We couldn’t load the project portfolio</h3><p class="text-muted mb-3">Please refresh the page or contact our team while we restore the project feed.</p><button class="btn btn-primary mr-2" type="button" onclick="location.reload()">Try again</button><a class="btn btn-outline-primary" href="contact.php">Contact E&amp;R</a></div></div>';
             });
     </script>
 

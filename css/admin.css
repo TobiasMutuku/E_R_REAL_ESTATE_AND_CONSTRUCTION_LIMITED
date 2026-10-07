@@ -158,6 +158,11 @@ a {
 .sidebar-signout {
   color: rgba(255, 255, 255, 0.5);
 }
+.sidebar-signout-button {
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
 
 .admin-main {
   min-width: 0;
@@ -1065,6 +1070,212 @@ textarea {
 }
 .toast i {
   color: var(--admin-brass);
+}
+
+.admin-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: 8px 0 24px rgba(13, 46, 40, 0.08);
+}
+.admin-sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+.admin-header {
+  position: sticky;
+  z-index: 4;
+  top: 0;
+  backdrop-filter: blur(14px);
+}
+.admin-content {
+  padding-bottom: 56px;
+}
+.panel,
+.stat-card,
+.project-admin-card,
+.button,
+.sidebar-link,
+.login-card {
+  border-radius: 10px;
+}
+.panel,
+.stat-card,
+.project-admin-card {
+  box-shadow: 0 12px 30px rgba(25, 53, 46, 0.055);
+}
+.stat-grid {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+.stat-icon,
+.activity-icon,
+.quick-icon {
+  border-radius: 11px;
+}
+.button {
+  min-height: 44px;
+}
+.button:focus-visible,
+.sidebar-link:focus-visible,
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(201, 163, 91, 0.7);
+  outline-offset: 2px;
+}
+.table-toolbar > div > strong {
+  font-size: 14px;
+}
+.table-toolbar .table-meta {
+  display: block;
+  margin-top: 4px;
+}
+.account-inline-form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.account-inline-form select {
+  min-width: 155px;
+  min-height: 38px;
+  padding: 8px;
+  border: 1px solid var(--admin-line);
+  border-radius: 7px;
+  color: var(--admin-ink);
+  background: #fbfcfb;
+}
+.account-inline-form .remember-option {
+  margin: 0;
+}
+.account-table-panel table {
+  min-width: 760px;
+}
+.account-table-panel td strong,
+.account-table-panel td small,
+.audit-table td small {
+  display: block;
+}
+.account-table-panel td small,
+.audit-table td small {
+  margin-top: 4px;
+  color: var(--admin-muted);
+}
+.notification-state {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 5px 8px;
+  border-radius: 20px;
+  color: #856528;
+  background: var(--admin-brass-light);
+  font-size: 10px;
+  text-transform: capitalize;
+}
+.notification-state.sent {
+  color: #176449;
+  background: #e5f2ec;
+}
+.notification-state.failed {
+  color: #8a3f35;
+  background: #f8e9e5;
+}
+.notification-state.unknown {
+  color: #666d72;
+  background: #eef0f1;
+}
+.warning-state {
+  color: #8a3f35;
+  background: #f8e9e5;
+}
+.sidebar-overlay {
+  position: fixed;
+  z-index: 4;
+  inset: 0;
+  display: none;
+  border: 0;
+  background: rgba(13, 33, 28, 0.48);
+}
+.sidebar-overlay.open {
+  display: block;
+}
+.recovery-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px 16px;
+}
+.recovery-shell .login-card {
+  width: min(100%, 480px);
+  min-height: 0;
+  padding: clamp(28px, 6vw, 54px);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
+}
+.recovery-shell .login-brand {
+  margin-bottom: 42px;
+}
+.login-reset-link {
+  display: inline-block;
+  margin-top: 18px;
+  color: var(--admin-green);
+  font-size: 12px;
+  font-weight: 700;
+}
+.login-reset-link:hover {
+  color: #976f2e;
+}
+.login-message:not(.warning) {
+  color: #176449;
+  background: #e5f2ec;
+}
+.login-message.warning {
+  color: #8a3f35;
+  background: #f8e9e5;
+}
+@media (max-width: 800px) {
+  .admin-sidebar {
+    position: fixed;
+    z-index: 6;
+    height: 100dvh;
+  }
+  .admin-header {
+    z-index: 5;
+  }
+  .mobile-menu {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border: 1px solid var(--admin-line);
+    border-radius: 9px;
+    color: var(--admin-green);
+    background: #fff;
+  }
+  .breadcrumbs {
+    min-width: 0;
+  }
+  .admin-header {
+    gap: 12px;
+  }
+  .account-inline-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @media (max-width: 1100px) {

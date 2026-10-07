@@ -35,8 +35,26 @@ $message = "";
 $property_id = "";
 $property_name = "";
 
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    $service_options = [
+        "new-construction" => "New construction",
+        "construction" => "New construction",
+        "renovation" => "Renovation",
+        "architecture" => "Architectural design",
+        "architectural-design" => "Architectural design",
+        "plumbing" => "Plumbing",
+        "electrical" => "Electrical installations",
+        "plumbing-and-electrical" => "Plumbing and electrical",
+        "property-or-land-enquiry" => "Property or land enquiry",
+    ];
+    $requested_service = strtolower(trim((string) ($_GET["service"] ?? "")));
+    $service = $service_options[$requested_service] ?? "";
+}
+
 try {
     require_once "config/db.php";
+    require_once __DIR__ . "/includes/site-mail.php";
+    require_once __DIR__ . "/includes/site-settings.php";
     $database_available = true;
 
 /*
@@ -160,6 +178,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !$database_available) {
         "New construction",
         "Renovation",
         "Architectural design",
+        "Plumbing",
+        "Electrical installations",
         "Plumbing and electrical",
         "Property or land enquiry",
     ], true)) {
@@ -348,6 +368,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !$database_available) {
             );
 
             if ($stmt->execute()) {
+                $quoteId = (int) $conn->insert_id;
+                $notificationStatus = "failed";
+                try {
+                    $settings = loadSiteSettings($conn);
+                    $body = "New website quote request.\n\nName: {$full_name}\nEmail: {$email}\nPhone: {$phone}\nService: {$service}\nLocation: {$location}\nBudget: {$budget}\nTimeline: {$timeline}\nProperty record: {$property_name}\nAttachment: " . ($attachment_path !== null ? "Available to authorized administrators" : "None") . "\n\nProject details:\n{$message}\n";
+                    $notificationStatus = sendSiteNotification(
+                        $settings["public_email"],
+                        "Website quote request: {$service}",
+                        $body,
+                        $email
+                    ) ? "sent" : "failed";
+                } catch (RuntimeException $exception) {
+                    error_log("Quote notification could not be prepared: " . $exception->getMessage());
+                }
+                $notificationUpdate = $conn->prepare("UPDATE quote_requests SET notification_status = ? WHERE id = ?");
+                if ($notificationUpdate) {
+                    $notificationUpdate->bind_param("si", $notificationStatus, $quoteId);
+                    if (!$notificationUpdate->execute()) {
+                        error_log("Quote notification status could not be saved: " . $notificationUpdate->error);
+                    }
+                    $notificationUpdate->close();
+                } else {
+                    error_log("Quote notification status update could not be prepared: " . $conn->error);
+                }
 
                 $success_message =
                     "Thank you. Your quote request has been recorded for our team to review. " .
@@ -422,7 +466,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !$database_available) {
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css"
         rel="stylesheet">
 
-    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style.css?v=20261007-site-audit" rel="stylesheet">
 </head>
 
 <body>
@@ -651,6 +695,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !$database_available) {
 
                                 <option value="Plumbing and electrical" <?= $service === "Plumbing and electrical" ? "selected" : "" ?>>
                                     Plumbing and electrical
+                                </option>
+
+                                <option value="Plumbing" <?= $service === "Plumbing" ? "selected" : "" ?>>
+                                    Plumbing
+                                </option>
+
+                                <option value="Electrical installations" <?= $service === "Electrical installations" ? "selected" : "" ?>>
+                                    Electrical installations
                                 </option>
 
                                 <option value="Property or land enquiry" <?= $service === "Property or land enquiry" ? "selected" : "" ?>>

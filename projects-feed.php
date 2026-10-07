@@ -1,16 +1,17 @@
 <?php
 
 header("Content-Type: application/json; charset=utf-8");
+header("Cache-Control: no-store, max-age=0");
 
 try {
     require_once __DIR__ . "/config/db.php";
     require_once __DIR__ . "/admin/projects/project-media.php";
 
-    if (!ensure_project_media_table($conn)) {
+    if (!project_media_table_exists($conn)) {
         throw new RuntimeException("Unable to prepare project media records.");
     }
 
-$sql = "SELECT id, project_name, location, description, project_status, start_date, completion_date, image
+$sql = "SELECT id, project_name, location, description, scope_summary, outcome_summary, project_status, start_date, completion_date, image
         FROM projects
         WHERE is_published = 1
         ORDER BY created_at DESC";
@@ -25,10 +26,21 @@ if ($result === false) {
 
 $projects = [];
 while ($project = $result->fetch_assoc()) {
+    $testContent = implode(" ", [
+        $project["project_name"] ?? "",
+        $project["description"] ?? "",
+        $project["scope_summary"] ?? "",
+        $project["outcome_summary"] ?? "",
+    ]);
+    $isTestRecord = stripos($testContent, "test only") !== false
+        || stripos($testContent, "test data only") !== false
+        || stripos($testContent, "this is for testing") !== false;
+
     $media = [];
     $media_stmt = $conn->prepare("SELECT media_path, media_type FROM project_media WHERE project_id = ? ORDER BY sort_order, id");
     $media_stmt->bind_param("i", $project["id"]);
     $media_stmt->execute();
+
     $media_result = $media_stmt->get_result();
     while ($media_item = $media_result->fetch_assoc()) {
         $media[] = ["path" => $media_item["media_path"], "type" => $media_item["media_type"]];
@@ -42,6 +54,9 @@ while ($project = $result->fetch_assoc()) {
         "project_name" => $project["project_name"],
         "location" => $project["location"],
         "description" => $project["description"],
+        "scope_summary" => $project["scope_summary"],
+        "outcome_summary" => $project["outcome_summary"],
+        "is_test" => $isTestRecord,
         "project_status" => $project["project_status"],
         "start_date" => $project["start_date"],
         "completion_date" => $project["completion_date"],

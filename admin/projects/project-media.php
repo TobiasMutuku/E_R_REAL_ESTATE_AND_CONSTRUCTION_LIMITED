@@ -1,19 +1,26 @@
 <?php
 
-function ensure_project_media_table(mysqli $conn): bool
+function project_media_table_exists(mysqli $conn): bool
 {
-    return (bool) $conn->query(
-        "CREATE TABLE IF NOT EXISTS project_media (
-            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            project_id INT UNSIGNED NOT NULL,
-            media_path VARCHAR(255) NOT NULL,
-            media_type ENUM('image', 'video') NOT NULL,
-            sort_order INT UNSIGNED NOT NULL DEFAULT 0,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            INDEX project_media_project_idx (project_id),
-            CONSTRAINT project_media_project_fk FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
-    );
+    $result = $conn->query("SHOW TABLES LIKE 'project_media'");
+    return $result !== false && $result->num_rows === 1;
+}
+
+function project_cover_image_exists(string $relativePath): bool
+{
+    if (!str_starts_with($relativePath, "uploads/projects/")) {
+        return false;
+    }
+
+    $directory = realpath(dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . "uploads" . DIRECTORY_SEPARATOR . "projects");
+    $imagePath = realpath(dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . str_replace("/", DIRECTORY_SEPARATOR, $relativePath));
+    if ($directory === false || $imagePath === false
+        || strpos($imagePath, $directory . DIRECTORY_SEPARATOR) !== 0
+        || !is_file($imagePath)) {
+        return false;
+    }
+
+    return in_array((new finfo(FILEINFO_MIME_TYPE))->file($imagePath), ["image/jpeg", "image/png", "image/webp"], true);
 }
 
 function project_media_uploads(array $files, string $directory): array
