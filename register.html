@@ -5,11 +5,13 @@
     <meta charset="utf-8">
     <title>E&R REAL ESTATE AND CONSTRUCTION LIMITED - Registration</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+    <meta content="construction training, architecture course, plumbing course, electrical course" name="keywords">
+    <meta
+        content="Apply for practical construction and technical training with E&R Real Estate and Construction Limited."
+        name="description">
 
     <!-- Favicon -->
-    <link href="img/ngando.png" rel="icon">
+    <link href="logo/E&R Logo.jfif" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -24,21 +26,273 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
-    <style type="text/css">
-        * {
-            margin: 0;
+    <style>
+        .academy-hero {
+            position: relative;
+            min-height: 360px;
+            overflow: hidden;
+            background: linear-gradient(105deg, rgba(13, 46, 40, .97) 0%, rgba(18, 61, 52, .82) 54%, rgba(18, 61, 52, .48) 100%), url("img/5825572544151490515.jpg") center/cover;
+        }
+
+        .academy-hero::after {
+            position: absolute;
+            right: -8%;
+            bottom: -38%;
+            width: 48%;
+            height: 90%;
+            border: 1px solid rgba(201, 163, 91, .35);
+            border-radius: 50%;
+            content: "";
+            transform: rotate(-18deg);
+        }
+
+        .academy-hero .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .academy-hero h1 {
+            max-width: 680px;
+            color: #fff;
+            letter-spacing: -.02em;
+        }
+
+        .academy-hero .lead {
+            max-width: 580px;
+            color: rgba(255, 255, 255, .78);
+        }
+
+        .application-wrap {
+            max-width: 1280px;
+            margin-top: -76px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .application-card {
+            background: #fff;
+            border: 1px solid rgba(18, 61, 52, .08);
+            border-radius: 18px;
+            box-shadow: 0 22px 55px rgba(18, 61, 52, .16);
+            overflow: hidden;
+        }
+
+        .application-card > .row {
+            align-items: stretch;
+        }
+
+        .application-card .application-aside {
+            position: relative;
+            min-width: 0;
+            padding: 48px 40px;
+            color: rgba(255, 255, 255, .76);
+            background: linear-gradient(155deg, var(--secondary), var(--secondary-dark));
+        }
+
+        .application-card .application-aside::before {
+            position: absolute;
+            top: 28px;
+            right: 28px;
+            width: 70px;
+            height: 70px;
+            border: 1px solid rgba(201, 163, 91, .32);
+            border-radius: 50%;
+            content: "";
+        }
+
+        .application-card .application-aside .eyebrow {
+            position: relative;
+            color: #c9a35b;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .application-card .application-aside h2 {
+            position: relative;
+            max-width: 260px;
+            color: #fff;
+            font-weight: 800;
+            line-height: 1.18;
+        }
+
+        .application-card .application-aside>p:not(.eyebrow) {
+            max-width: 280px;
+            line-height: 1.75;
+        }
+
+        .application-steps {
+            list-style: none;
+            margin: 34px 0 38px;
             padding: 0;
         }
 
-        body {
-            background-image: url("img/kijani1.jpg");
-            background-position: center;
-            background-size: cover;
-            font-family: sans-serif;
-            margin-top: auto;
+        .application-steps li {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 20px;
         }
 
-        *form-group {}
+        .application-steps i {
+            flex: 0 0 36px;
+            align-items: center;
+            background: rgba(201, 163, 91, .16);
+            border: 1px solid rgba(201, 163, 91, .24);
+            border-radius: 50%;
+            color: #c9a35b;
+            display: inline-flex;
+            height: 36px;
+            justify-content: center;
+            width: 36px;
+        }
+
+        .application-card .application-aside a {
+            color: #e2c98f !important;
+        }
+
+        .application-card .application-form {
+            min-width: 0;
+            padding: 48px clamp(28px, 4vw, 56px) 44px;
+        }
+
+        .application-card .application-form>p:first-child {
+            color: #a57a38 !important;
+            letter-spacing: .14em;
+        }
+
+        .application-card .application-form h2 {
+            color: #123d34;
+            font-weight: 800;
+            letter-spacing: -.015em;
+            line-height: 1.25;
+        }
+
+        .application-card .application-form .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .application-card .application-form label {
+            color: #29473e;
+            font-size: .78rem;
+            font-weight: 800;
+            letter-spacing: .03em;
+            margin-bottom: .5rem;
+        }
+
+        .application-card .application-form .form-control {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            background: #f8faf8;
+            border: 1px solid #dce6e0;
+            border-radius: 9px;
+            min-height: 50px;
+            padding: .72rem .9rem;
+        }
+
+        .application-card .application-form .form-control:focus {
+            background: #fff;
+            border-color: #c9a35b;
+            box-shadow: 0 0 0 .2rem rgba(201, 163, 91, .17);
+        }
+
+        .application-card .application-form textarea.form-control {
+            min-height: 128px;
+        }
+
+        .application-card .application-note {
+            color: #71817a;
+            font-size: .8rem;
+            line-height: 1.6;
+        }
+
+        .application-card .application-form .btn-primary {
+            flex: 0 0 auto;
+            min-height: 50px;
+            border: 0;
+            border-radius: 9px;
+            box-shadow: 0 8px 18px rgba(165, 122, 56, .2);
+        }
+
+        .application-card .application-form #applicationStatus:not(:empty) {
+            padding: .85rem 1rem;
+            border: 1px solid rgba(18, 61, 52, .12);
+            border-radius: 9px;
+            background: #f5f8f6;
+        }
+
+        .application-card .application-form #applicationStatus[data-state="success"] {
+            color: #155b43;
+            background: #edf7f1;
+        }
+
+        .application-card .application-form #applicationStatus[data-state="error"] {
+            color: #8b3030;
+            background: #fff2f0;
+        }
+
+        @media (max-width: 991.98px) {
+            .application-wrap {
+                margin-top: -56px;
+            }
+
+            .application-card .application-aside {
+                min-height: auto;
+                padding: 36px 30px;
+            }
+
+            .application-card .application-form {
+                padding: 36px 30px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .academy-hero {
+                min-height: 310px;
+            }
+
+            .academy-hero h1 {
+                font-size: 2.25rem;
+            }
+
+            .academy-hero .lead {
+                font-size: 1rem;
+            }
+
+            .application-wrap {
+                margin-top: -38px;
+                padding-right: 15px;
+                padding-left: 15px;
+            }
+
+            .application-card .application-aside,
+            .application-card .application-form {
+                padding: 28px 22px;
+            }
+
+            .application-card .application-aside {
+                min-height: 0;
+                height: auto;
+            }
+
+            .application-card .application-form .d-flex {
+                align-items: stretch !important;
+                gap: 1rem;
+            }
+
+            .application-card .application-form .btn-primary {
+                width: 100%;
+            }
+
+            .application-card .application-aside::before {
+                top: 20px;
+                right: 20px;
+                width: 52px;
+                height: 52px;
+            }
+        }
     </style>
 </head>
 
@@ -50,7 +304,8 @@
                 <a href="index.html" class="navbar-brand d-flex align-items-center">
                     <img src="logo/E&R Logo.jfif" alt="E&R Real Estate and Construction Limited logo">
                 </a>
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Open navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
@@ -58,136 +313,97 @@
                         <a href="index.html" class="nav-item nav-link">Home</a>
                         <a href="about.html" class="nav-item nav-link">About</a>
                         <a href="service.html" class="nav-item nav-link">Services</a>
+                        <a href="constructions.html" class="nav-item nav-link">Projects</a>
+                        <a href="real-estate.html" class="nav-item nav-link">Properties</a>
+                        <a href="quote.php" class="nav-item nav-link">Get a Quote</a>
+                        <a href="contact.html" class="nav-item nav-link">Contact</a>
                     </div>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Our Academy</a>
-                        <div class="dropdown-menu border-0 rounded-0 m-0">
-                            <a href="pricing.html" class="dropdown-item">Courses Offered</a>
-                            <a href="register.html" class="dropdown-item">Register</a>
-                        </div>
-                    </div>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle active" data-toggle="dropdown">Pages</a>
-                        <div class="dropdown-menu border-0 rounded-0 m-0">
-                            <a href="blog.html" class="dropdown-item">Blog Grid</a>
-                            <a href="single.html" class="dropdown-item active">Blog Detail</a>
-                        </div>
-                    </div>
-                    <a href="contact.html" class="nav-item nav-link">Contact</a>
                 </div>
+            </nav>
         </div>
-        </nav>
-    </div>
     </div>
     <!-- Navbar End -->
 
 
-    <!-- Page Header Start -->
-    <div
-        class="container-fluid page-header d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5 mb-5">
-        <h1 class="display-4 text-white mb-3 mt-0 mt-lg-5">Apply Now</h1>
-        <div class="d-inline-flex text-white">
-            <p class="m-0"><a class="text-white" href="">Home</a></p>
-            <p class="m-0 px-2">/</p>
-            <p class="m-0">Register</p>
-        </div>
-    </div>
-    <!-- Page Header Start -->
-
-
-    <!-- Detail Start -->
-    <div class="container py-5">
-        <div class="row">
-            <!-- Sidebar Start -->
-            <div class="col-lg-4 mt-5 mt-lg-0">
-                <!-- Search Form Start -->
-                <div class="mb-5">
-                    <form action="">
-                        <div class="input-group">
-                            <input type="text" class="form-control form-control-lg" placeholder="Search Course">
-                            <div class="input-group-append">
-                                <span class="input-group-text bg-transparent text-primary"><i
-                                        class="fa fa-search"></i></span>
+    <main>
+        <section class="academy-hero d-flex align-items-center">
+            <div class="container text-white py-5">
+                <p class="text-uppercase font-weight-bold mb-2" style="letter-spacing:.12em">E&amp;R Academy</p>
+                <h1 class="display-4 font-weight-bold mb-3">Build practical skills for the work ahead.</h1>
+                <p class="lead mb-0">Explore hands-on training in construction, design, plumbing, and electrical
+                    installation.</p>
+            </div>
+        </section>
+        <section class="container application-wrap pb-5">
+            <div class="application-card">
+                <div class="row no-gutters">
+                    <aside class="col-lg-4 application-aside">
+                        <p class="eyebrow mb-3">E&amp;R Academy</p>
+                        <h2 class="h3 mb-3">Start with a conversation.</h2>
+                        <p>Share your interests and our team will follow up about the right training programme.</p>
+                        <ul class="application-steps">
+                            <li><i class="fa fa-user" aria-hidden="true"></i><span>Tell us how to reach you</span></li>
+                            <li><i class="fa fa-graduation-cap" aria-hidden="true"></i><span>Choose a programme</span>
+                            </li>
+                            <li><i class="fa fa-paper-plane" aria-hidden="true"></i><span>Our team will get in touch</span>
+                            </li>
+                        </ul>
+                        <p class="mb-0 small">Questions before you apply? <a class="text-primary font-weight-bold"
+                                href="contact.html">Talk to our team</a>.</p>
+                    </aside>
+                    <div class="col-lg-8 application-form">
+                        <p class="text-primary text-uppercase font-weight-bold small mb-2">Course enquiry</p>
+                        <h2 class="h3 mb-2">Tell us what you’re looking to learn</h2>
+                        <p class="text-muted mb-4">We only ask for the details needed to follow up with you.</p>
+                        <form id="academyApplication" action="mail/academy.php" method="post">
+                            <div class="d-none" aria-hidden="true">
+                                <label for="website">Leave this field empty</label>
+                                <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
                             </div>
-                        </div>
-                    </form>
+                            <div class="form-row">
+                                <div class="col-md-6 form-group"><label for="firstName">First name *</label><input
+                                        class="form-control" id="firstName" name="first_name" type="text"
+                                        autocomplete="given-name" required></div>
+                                <div class="col-md-6 form-group"><label for="surname">Surname *</label><input
+                                        class="form-control" id="surname" name="surname" type="text"
+                                        autocomplete="family-name" required></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6 form-group"><label for="course">Programme of interest *</label>
+                                    <select class="form-control" id="course" name="course" required>
+                                        <option value="">Select a programme</option>
+                                        <option value="architecture">Architecture &amp; design</option>
+                                        <option value="construction">Building &amp; construction</option>
+                                        <option value="plumbing">Plumbing</option>
+                                        <option value="electrical">Electrical installation</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 form-group"><label for="applicantPhone">Phone / WhatsApp
+                                        *</label><input class="form-control" id="applicantPhone" name="phone" type="tel"
+                                        autocomplete="tel" placeholder="+254 700 000 000" required></div>
+                            </div>
+                            <div class="form-group"><label for="applicantEmail">Email address *</label><input
+                                    class="form-control" id="applicantEmail" name="email" type="email"
+                                    autocomplete="email" placeholder="you@example.com" required></div>
+                            <div class="form-group"><label for="applicationMessage">What would you like to achieve?
+                                    *</label><textarea class="form-control" id="applicationMessage" name="message"
+                                    placeholder="Share your interests, experience, or learning goals." required></textarea>
+                            </div>
+                            <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between">
+                                <p class="application-note mb-3 mb-sm-0"><i class="fa fa-lock text-primary mr-1"
+                                        aria-hidden="true"></i>Your details are used to respond to this enquiry.</p>
+                                <button class="btn btn-primary font-weight-semi-bold px-4 py-3" type="submit">
+                                    Send course enquiry <i class="fa fa-arrow-right ml-2" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <p class="application-note mt-3 mb-0" id="applicationStatus" role="status"
+                                aria-live="polite"></p>
+                        </form>
+                    </div>
                 </div>
-                <!-- Search Form End -->
-
             </div>
-            <!-- Sidebar End -->
-
-            <!-- Comment Form Start -->
-            <div class="border p-5">
-                <h3 class="font-weight-bold mb-4">Fill The Application Form</h3>
-                <form>
-                    <div class="form-group">
-                        <label for="name">First Name *</label>
-                        <input type="text" class="form-control" id=" First name">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">Middle Name *</label>
-                        <input type="text" class="form-control" id="Middle name">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">SurName *</label>
-                        <input type="text" class="form-control" id="Surname">
-                    </div>
-                    Gender
-                    <div class="form-group">
-                        <label for="Male">Male *</label>
-                        <input type="radio" name="gender" class="form-control" id="Male" value="Male">
-                    </div>
-                    <div class="form-group">
-                        <label for="Female">Female*</label>
-                        <input type="radio" name="gender" class="form-control" id="Female" value="Female">
-                    </div>
-                    <div class="form-group">
-                        <label for="age">Age *</label>
-                        <input type="number" class="form-control" id="age">
-                    </div>
-                    <div class="form-group">
-                        <label for="Date Of Birth">Date of Birth*</label>
-                        <input type="date" name="date" class="form-control" id="date" min="1990-01-01">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address *</label>
-                        <input type="email" class="form-control" id="email  ">
-                    </div>
-                    <div class="form-group">
-                        <label for="phone number">Phone number (+254...) *</label>
-                        <input type="number" class="form-control" id="(+254)..">
-                    </div>
-                    <div>
-                        <label for="Upload Profile Photo"> Upload Profile Photo</label>
-                        <input type="file" name="Upload Profile Photo" id="file">
-                    </div>
-                    <div <label for="SELECT COURSE"> SELECT COURSE</label>
-                        <select name="SELECT COURSE" id="SELECT COURSE" multiple>
-                            <option value="ARCHITECTURE" ARCHITECTURE</option>
-                            <option label="ARCHITECTURE" ARCHITECTURE</option>
-                            <option label="BULDING & CONSTRUCTION" BULDING & CONSTRUCTION</option>
-                            <option label="PLUMBING" PLUMBING</option>
-                            <option label="ELECTRICAL" ELECTRICAL</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message *</label>
-                        <textarea id="message" cols="30" rows="5" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group mb-0">
-                        <input type="submit" value="Submit Application"
-                            class="btn btn-primary font-weight-semi-bold py-2 px-3">
-                    </div>
-                </form>
-            </div>
-            <!-- Comment Form End -->
-        </div>
-        <!-- Blog Detail End -->
-
-    </div>
-    </div>
-    <!-- Detail End -->
+        </section>
+    </main>
 
 
     <!-- Footer Start -->
@@ -201,12 +417,10 @@
                     Platforms</p>
                 <div class="d-flex justify-content-start mt-4">
                     <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;"
-                        href="https://web.facebook.com/Ngando-Workers-Construction-Company-103296614813581"><i
+                        style="width: 38px; height: 38px;" href="contact.html" aria-label="Contact E&R on Facebook"><i
                             class="fab fa-facebook-f"></i></a>
                     <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
-                        style="width: 38px; height: 38px;"
-                        href="https://www.linkedin.com/in/ngando-company-a49924242/"><i
+                        style="width: 38px; height: 38px;" href="contact.html" aria-label="Contact E&R on LinkedIn"><i
                             class="fab fa-linkedin-in"></i></a>
                     <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
                         style="width: 38px; height: 38px;"
@@ -215,19 +429,22 @@
                     <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
                         style="width: 38px; height: 38px;" href="https://www.tiktok.com/@e_r_real_estate?lang=en"><i
                             class="fab fa-tiktok"></i></a>
+                    <a class="btn btn-outline-primary rounded-circle text-center mr-2 px-0"
+                        style="width: 38px; height: 38px;" href="https://x.com/E_R_REAL_ESTATE"
+                        aria-label="Follow E&R on X"><span aria-hidden="true">X</span></a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-5">
-                <h5 class="font-weight-bold text-primary mb-4">Why Build With Us</h5>
+                <h5 class="font-weight-bold text-primary mb-4">Our Approach</h5>
                 <div class="d-flex flex-column justify-content-start">
-                    <p class="text-white mb-2"><i class="fa fa-angle-right text-primary mr-2"></i>Charges are fair and
-                        pockect friendly</p>
-                    <p class="text-white mb-2"><i class="fa fa-angle-right text-primary mr-2"></i>We deliver within the
-                        time frame</p>
-                    <p class="text-white mb-2"><i class="fa fa-angle-right text-primary mr-2"></i>Our Services are
-                        certified by the government</p>
-                    <p class="text-white mb-2"><i class="fa fa-angle-right text-primary mr-2"></i>Reliable Customer
-                        support</p>
+                    <p class="text-white mb-2"><i class="fa fa-angle-right text-primary mr-2"></i>Scope-led project
+                        planning</p>
+                    <p class="text-white mb-2"><i class="fa fa-angle-right text-primary mr-2"></i>Clear communication
+                        throughout</p>
+                    <p class="text-white mb-2"><i class="fa fa-angle-right text-primary mr-2"></i>Coordinated
+                        construction services</p>
+                    <p class="text-white mb-2"><i class="fa fa-angle-right text-primary mr-2"></i>Quality-focused
+                        workmanship</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-5">
@@ -239,8 +456,8 @@
                             class="fa fa-angle-right text-primary mr-2"></i>About Us</a>
                     <a class="text-white mb-2" href="service.html"><i
                             class="fa fa-angle-right text-primary mr-2"></i>Services</a>
-                    <a class="text-white mb-2" href="pricing.html"><i
-                            class="fa fa-angle-right text-primary mr-2"></i>Pricing</a>
+                    <a class="text-white mb-2" href="constructions.html"><i
+                            class="fa fa-angle-right text-primary mr-2"></i>Projects</a>
                     <a class="text-white" href="contact.html"><i class="fa fa-angle-right text-primary mr-2"></i>Contact
                         Us</a>
                 </div>
@@ -251,16 +468,15 @@
                 <p><i class="fa fa-map-marker-alt text-primary mr-2"></i>WATAMU MALL, OFFICE 34, 1ST FLOOR, WATAMU,
                     KILIFI COUNTY</p>
                 <p><i class="fa fa-phone-alt text-primary mr-2"></i>+254748766822</p>
-                <a><i class="fa fa-envelope text-primary mr-2" href="https://gmail.com">
-                    </i>errealestateconstruction@gmail.com</a>
+                <a class="footer-contact-link" href="mailto:errealestateconstruction@gmail.com"><i
+                        class="fa fa-envelope text-primary mr-2" aria-hidden="true"></i>errealestateconstruction@gmail.com</a>
             </div>
         </div>
     </div>
     <div class="container-fluid py-4 px-sm-3 px-md-5">
         <p class="m-0 text-center">
             &copy;2026 <a class="font-weight-semi-bold" href="#">E&R REAL ESTATE AND CONSTRUCTION LIMITED</a>. Terms &
-            Conditions. All Rights Reserved. Follow us on
-            <a class="font-weight-semi-bold" href="https://x.com/E_R_REAL_ESTATE">X</a>
+            Conditions. All Rights Reserved.
         </p>
     </div>
     <!-- Footer End -->
@@ -268,6 +484,53 @@
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-up"></i></a>
+
+    <script>
+        (function () {
+            var form = document.getElementById('academyApplication');
+            var status = document.getElementById('applicationStatus');
+            var submitButton = form.querySelector('[type="submit"]');
+
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+                if (!form.reportValidity()) return;
+
+                submitButton.disabled = true;
+                status.dataset.state = '';
+                status.textContent = 'Sending your enquiry…';
+
+                try {
+                    var response = await fetch(form.action, {
+                        method: form.method,
+                        body: new FormData(form),
+                        headers: { Accept: 'application/json' }
+                    });
+
+                    if (!response.ok) {
+                        var messages = {
+                            400: 'We could not accept this submission. Please check your details and try again.',
+                            405: 'This form is temporarily unavailable. Please contact our team directly.',
+                            422: 'Please check your name, contact details, and selected programme.',
+                            429: 'Please wait a moment before sending another enquiry.',
+                            500: 'We could not send your enquiry just now. Please try again later.'
+                        };
+                        throw new Error(messages[response.status] || 'We could not send your enquiry. Please try again later.');
+                    }
+
+                    form.reset();
+                    status.dataset.state = 'success';
+                    status.textContent = 'Thank you. Your course enquiry has been sent to our academy team.';
+                } catch (error) {
+                    status.dataset.state = 'error';
+                    status.textContent = error instanceof TypeError
+                        ? 'We could not connect to the academy team. Please try again later.'
+                        : error.message;
+                } finally {
+                    submitButton.disabled = false;
+                }
+            });
+        }());
+    </script>
 
 
     <!-- JavaScript Libraries -->
@@ -284,6 +547,7 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <script src="js/site-settings.js" defer></script>
 </body>
 
 </html>

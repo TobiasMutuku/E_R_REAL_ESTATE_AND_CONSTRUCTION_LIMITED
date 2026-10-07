@@ -2,3 +2,9 @@ token.txt
 .env
 .env.*
 !.env.example
+
+# Large video files
+img/*.mp4
+
+# Local database exports can contain personal information
+backups/

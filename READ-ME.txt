@@ -1,11 +1,4 @@
-  =>  Website Name    : Ngando Workers Construction Company
+E&R REAL ESTATE AND CONSTRUCTION LIMITED
 
-  =>  Website Link    : https://ngandocompany.com
-
-  =>  Website License : https://ngandocompany.com/license (or read the LICENSE.txt file)
-
-  =>  Website Author  : Tobias Mutuku
-
-  =>  Author Website   : https://Tobiasentreprenuer.com
-
-  =>  About Tobias Mutuku : Tobias Mutuku is one of the top creators and publishers of HTML websites, HTML landing pages, HTML email templates and HTML snippets in Malindi. Read more at ( https://Tobiasentreprenuer.com/about-us )
+This project contains the public company website and PHP mail handlers.
+See README.md for local preview and production requirements.
